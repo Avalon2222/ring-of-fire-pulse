@@ -1,0 +1,70 @@
+nama,provinsi,level,status,url_laporan
+Anak Krakatau,Lampung,3,Siaga,https://magma.esdm.go.id/v1/gunung-api/laporan/329653
+Merapi,Daerah Istimewa Yogyakarta dan Jawa Tengah,3,Siaga,https://magma.esdm.go.id/v1/gunung-api/laporan/329656
+Semeru,Jawa Timur,3,Siaga,https://magma.esdm.go.id/v1/gunung-api/laporan/329657
+Anak Ranakah,Nusa Tenggara Timur,2,Waspada,https://magma.esdm.go.id/v1/gunung-api/laporan/329587
+Awu,Sulawesi Utara,2,Waspada,https://magma.esdm.go.id/v1/gunung-api/laporan/329616
+Banda Api,Maluku,2,Waspada,https://magma.esdm.go.id/v1/gunung-api/laporan/329597
+Bromo,Jawa Timur,2,Waspada,https://magma.esdm.go.id/v1/gunung-api/laporan/329658
+Bur Ni Telong,Aceh,2,Waspada,https://magma.esdm.go.id/v1/gunung-api/laporan/329629
+Dempo,Sumatera Selatan,2,Waspada,https://magma.esdm.go.id/v1/gunung-api/laporan/329624
+Dukono,Maluku Utara,2,Waspada,https://magma.esdm.go.id/v1/gunung-api/laporan/329645
+Gamalama,Maluku Utara,2,Waspada,https://magma.esdm.go.id/v1/gunung-api/laporan/329644
+Ibu,Maluku Utara,2,Waspada,https://magma.esdm.go.id/v1/gunung-api/laporan/329659
+Ili Lewotolok,Nusa Tenggara Timur,2,Waspada,https://magma.esdm.go.id/v1/gunung-api/laporan/329569
+Iya,Nusa Tenggara Timur,2,Waspada,https://magma.esdm.go.id/v1/gunung-api/laporan/329574
+Karangetang,Sulawesi Utara,2,Waspada,https://magma.esdm.go.id/v1/gunung-api/laporan/329655
+Kerinci,"Jambi, Sumatera Barat",2,Waspada,https://magma.esdm.go.id/v1/gunung-api/laporan/329652
+Lewotobi Laki-laki,Nusa Tenggara Timur,2,Waspada,https://magma.esdm.go.id/v1/gunung-api/laporan/329647
+Lokon,Sulawesi Utara,2,Waspada,https://magma.esdm.go.id/v1/gunung-api/laporan/329601
+Marapi,Sumatera Barat,2,Waspada,https://magma.esdm.go.id/v1/gunung-api/laporan/329654
+Raung,Jawa Timur,2,Waspada,https://magma.esdm.go.id/v1/gunung-api/laporan/329626
+Rinjani,Nusa Tenggara Barat,2,Waspada,https://magma.esdm.go.id/v1/gunung-api/laporan/329617
+Sangeangapi,Nusa Tenggara Barat,2,Waspada,https://magma.esdm.go.id/v1/gunung-api/laporan/329632
+Sinabung,Sumatera Utara,2,Waspada,https://magma.esdm.go.id/v1/gunung-api/laporan/329603
+Slamet,Jawa Tengah,2,Waspada,https://magma.esdm.go.id/v1/gunung-api/laporan/329591
+Soputan,Sulawesi Utara,2,Waspada,https://magma.esdm.go.id/v1/gunung-api/laporan/329615
+Sorikmarapi,Sumatera Utara,2,Waspada,https://magma.esdm.go.id/v1/gunung-api/laporan/329613
+Tambora,Nusa Tenggara Barat,2,Waspada,https://magma.esdm.go.id/v1/gunung-api/laporan/329614
+Agung,Bali,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329619
+Ambang,Sulawesi Utara,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329635
+Arjuno Welirang,Jawa Timur,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329609
+Batur,Bali,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329627
+Batutara,Nusa Tenggara Timur,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/304360
+Ciremai,Jawa Barat,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329595
+Colo,Sulawesi Tengah,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329598
+Dieng,Jawa Tengah,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329612
+Ebulobo,Nusa Tenggara Timur,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329648
+Egon,Nusa Tenggara Timur,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329660
+Galunggung,Jawa Barat,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329621
+Gamkonora,Maluku Utara,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329650
+Gede,Jawa Barat,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329593
+Guntur,Jawa Barat,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329622
+Hobal,Nusa Tenggara Timur,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/293107
+Ijen,Jawa Timur,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329640
+Ile Werung,Nusa Tenggara Timur,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329586
+Ili Boleng,Nusa Tenggara Timur,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329611
+Inielika,Nusa Tenggara Timur,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329599
+Inierie,Nusa Tenggara Timur,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329649
+Kaba,Bengkulu,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329620
+Kelimutu,Nusa Tenggara Timur,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329592
+Kelud,Jawa Timur,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329633
+Kie Besi,Maluku Utara,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329607
+Lamongan,Jawa Timur,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329631
+Lereboleng,Nusa Tenggara Timur,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329573
+Lewotobi Perempuan,Nusa Tenggara Timur,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329646
+Mahawu,Sulawesi Utara,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329590
+Papandayan,Jawa Barat,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329610
+Peut Sague,Daerah Istimewa Aceh,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329623
+Rokatenda,Nusa Tenggara Timur,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329634
+Ruang,Sulawesi Utara,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329572
+Salak,Jawa Barat,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329628
+Seulawah Agam,Daerah Istimewa Aceh,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329630
+Sirung,Nusa Tenggara Timur,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329589
+Sumbing,Jawa Tengah,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329596
+Sundoro,Jawa Tengah,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329594
+Talang,Sumatera Barat,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329618
+Tandikat,Sumatera Barat,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329606
+Tangkoko,Sulawesi Utara,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329625
+Tangkuban Parahu,Jawa Barat,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329600
+Wurlali,Maluku,1,Normal,https://magma.esdm.go.id/v1/gunung-api/laporan/329636
