@@ -7,6 +7,8 @@
 *A live map of Indonesia's earthquakes and volcanoes, fed by public BMKG, USGS and MAGMA Indonesia data, with
 magnitude, depth and time pattern analysis. Falls back to a cached sample dataset when offline.*
 
+**🚀 Coba langsung di browser:** [ring-of-fire-pulse.streamlit.app](https://ring-of-fire-pulse.streamlit.app)
+
 ![Peta gempa dan gunung api](docs/screenshots/01_peta.png)
 
 > ⚠️ **Disclaimer.** Aplikasi ini menampilkan ulang data publik untuk tujuan edukasi dan portofolio. Ia **bukan sistem
