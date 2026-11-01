@@ -53,7 +53,7 @@ Buka `http://localhost:8501`. Data diambil saat aplikasi dibuka dan disimpan 10 
 di sidebar memaksa pengambilan baru. Jika jaringan tidak tersedia, aplikasi otomatis memakai data contoh di
 `data/sample/` dan menampilkan spanduk peringatan. Mode offline juga bisa dipilih langsung di sidebar.
 
-Pengujian: `python -m pytest tests/ -v` (27 tes, tanpa jaringan). Perbarui data contoh:
+Pengujian: `python -m pytest tests/ -v` (27 tes, tanpa jaringan; otomatis jalan di GitHub Actions setiap push dan pull request). Perbarui data contoh:
 `python scripts/perbarui_sample.py`.
 
 ## Sumber data
