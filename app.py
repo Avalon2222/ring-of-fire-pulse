@@ -51,18 +51,18 @@ def format_menit(menit: float) -> str:
 # ---------------------------------------------------------------------------
 
 with st.sidebar:
-    st.markdown("### ⚙️ Pengaturan")
-    mode = st.radio("Sumber data", ["Langsung (BMKG + USGS + MAGMA)", "Offline (data contoh)"], index=0)
+    st.markdown("### ⚙️ Settings")
+    mode = st.radio("Data source", ["Live (BMKG + USGS + MAGMA)", "Offline (sample data)"], index=0)
     offline = mode.startswith("Offline")
-    hari = st.select_slider("Jendela katalog USGS", options=[7, 14, 30], value=30, format_func=lambda h: f"{h} hari")
-    mag_min = st.slider("Magnitudo minimum", 2.5, 6.0, 2.5, 0.1)
-    kelas = st.multiselect("Kelas kedalaman", analisis.URUTAN_KEDALAMAN, default=analisis.URUTAN_KEDALAMAN)
-    st.markdown("### 🗺️ Lapisan peta")
-    tampil_gempa = st.checkbox("Gempa", True)
-    tampil_gunung = st.checkbox("Gunung api", True)
-    tampil_heatmap = st.checkbox("Heatmap gempa", False)
-    tampil_palung = st.checkbox("Garis palung (perkiraan)", True)
-    if st.button("🔄 Muat ulang data", width="stretch"):
+    hari = st.select_slider("USGS catalog window", options=[7, 14, 30], value=30, format_func=lambda h: f"{h} hari")
+    mag_min = st.slider("Minimum magnitude", 2.5, 6.0, 2.5, 0.1)
+    kelas = st.multiselect("Depth class", analisis.URUTAN_KEDALAMAN, default=analisis.URUTAN_KEDALAMAN)
+    st.markdown("### 🗺️ Map layers")
+    tampil_gempa = st.checkbox("Earthquakes", True)
+    tampil_gunung = st.checkbox("Volcanoes", True)
+    tampil_heatmap = st.checkbox("Earthquake heatmap", False)
+    tampil_palung = st.checkbox("Trench lines (approx.)", True)
+    if st.button("🔄 Reload data", width="stretch"):
         muat.clear()
         st.rerun()
     st.markdown(
@@ -115,7 +115,7 @@ k4.metric("Denyut 24 jam", f"{dny['terakhir']} gempa", f"{dny['rasio']:.1f}× la
 k5.metric("Gunung Siaga/Awas", f"{len(siaga)}", ", ".join(siaga["nama"].head(3)) if not siaga.empty else "tidak ada", delta_color="off")
 k6.metric("Energi (× bom Hiroshima)", f"{ring['energi_hiroshima']:.1f}×", f"M median {ring['m_median']:.1f}", delta_color="off")
 
-tab_peta, tab_pola, tab_gunung, tab_data, tab_cara = st.tabs(["🗺️ Peta", "📈 Pola", "🌋 Gunung Api", "📋 Data & Sumber", "🧭 Cara Kerja"])
+tab_peta, tab_pola, tab_gunung, tab_data, tab_cara = st.tabs(["🗺️ Map", "📈 Patterns", "🌋 Volcanoes", "📋 Data & Sources", "🧭 How it works"])
 
 
 # ---------------------------------------------------------------------------
@@ -250,7 +250,7 @@ with tab_gunung:
             column_config={"Laporan": st.column_config.LinkColumn(display_text="MAGMA")},
         )
     st.markdown("#### Gempa di sekitar gunung api")
-    radius = st.slider("Radius pencarian (km)", 20, 150, 50, 10)
+    radius = st.slider("Search radius (km)", 20, 150, 50, 10)
     sekitar = analisis.gempa_sekitar_gunung(gempa, gunung, radius)
     sekitar = sekitar[sekitar["jumlah_gempa"] > 0]
     if sekitar.empty:
@@ -297,7 +297,7 @@ with tab_data:
         },
     )
     csv = tampil.to_csv(index=False).encode("utf-8")
-    st.download_button("⬇️ Unduh CSV", csv, file_name=f"gempa_indonesia_{datetime.now(timezone.utc):%Y%m%d}.csv", mime="text/csv")
+    st.download_button("⬇️ Download CSV", csv, file_name=f"gempa_indonesia_{datetime.now(timezone.utc):%Y%m%d}.csv", mime="text/csv")
     st.markdown(
         """
         **Sumber**

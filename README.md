@@ -27,11 +27,11 @@ menghapus catatan ganda, lalu bertanya: adakah pola di balik denyut itu?
 
 | Tab | Isi |
 |---|---|
-| 🗺️ Peta | Peta Folium gelap: gempa sebagai lingkaran (ukuran = magnitudo, warna = kedalaman), 69 gunung api sebagai segitiga berwarna level MAGMA, heatmap, garis palung, daftar 12 gempa terbaru dengan tombol sorot |
-| 📈 Pola | Histogram magnitudo, hukum Gutenberg–Richter dengan **b-value** dan magnitudo kelengkapan, magnitudo vs kedalaman, penampang bujur × kedalaman (zona Wadati–Benioff), gempa per hari dan per jam, jeda antar gempa, energi kumulatif setara bom Hiroshima, zona 2°×2° paling ramai |
-| 🌋 Gunung Api | Jumlah gunung api per level (Normal–Awas), tabel Level II ke atas dengan tautan laporan MAGMA, dan gempa dalam radius tertentu dari tiap gunung |
-| 📋 Data & Sumber | Seluruh tabel dengan gunung api terdekat, unduh CSV, tabel sumber, catatan pengambilan data |
-| 🧭 Cara Kerja | Alur data dari umpan ke peta |
+| 🗺️ Map | Peta Folium gelap: gempa sebagai lingkaran (ukuran = magnitudo, warna = kedalaman), 69 gunung api sebagai segitiga berwarna level MAGMA, heatmap, garis palung, daftar 12 gempa terbaru dengan tombol sorot |
+| 📈 Patterns | Histogram magnitudo, hukum Gutenberg–Richter dengan **b-value** dan magnitudo kelengkapan, magnitudo vs kedalaman, penampang bujur × kedalaman (zona Wadati–Benioff), gempa per hari dan per jam, jeda antar gempa, energi kumulatif setara bom Hiroshima, zona 2°×2° paling ramai |
+| 🌋 Volcanoes | Jumlah gunung api per level (Normal–Awas), tabel Level II ke atas dengan tautan laporan MAGMA, dan gempa dalam radius tertentu dari tiap gunung |
+| 📋 Data & Sources | Seluruh tabel dengan gunung api terdekat, download CSV, tabel sumber, catatan pengambilan data |
+| 🧭 How it works | Alur data dari umpan ke peta |
 
 Kartu KPI di atas: jumlah gempa, gempa terakhir, gempa terbesar, **denyut 24 jam** (laju gempa sehari terakhir
 dibanding laju rata-rata), gunung api Siaga/Awas, dan total energi yang dilepas.
@@ -49,7 +49,7 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-Buka `http://localhost:8501`. Data diambil saat aplikasi dibuka dan disimpan 10 menit; tombol "Muat ulang data"
+Buka `http://localhost:8501`. Data diambil saat aplikasi dibuka dan disimpan 10 menit; tombol "Reload data"
 di sidebar memaksa pengambilan baru. Jika jaringan tidak tersedia, aplikasi otomatis memakai data contoh di
 `data/sample/` dan menampilkan spanduk peringatan. Mode offline juga bisa dipilih langsung di sidebar.
 
