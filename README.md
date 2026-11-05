@@ -4,8 +4,20 @@
 > Peta langsung gempa bumi dan gunung api Indonesia dari umpan publik **BMKG**, **USGS**, dan **MAGMA Indonesia**,
 > dilengkapi analisis pola magnitudo, kedalaman, dan waktu. Dibangun dengan Python, pandas, Streamlit, Folium, dan Plotly.
 
-*A live map of Indonesia's earthquakes and volcanoes, fed by public BMKG, USGS and MAGMA Indonesia data, with
-magnitude, depth and time pattern analysis. Falls back to a cached sample dataset when offline.*
+## 🇬🇧 In English
+
+**The ground never sleeps.** A live map of Indonesia's earthquakes and volcanoes, merged from three public feeds (BMKG, USGS, MAGMA Indonesia), with real seismology on top: magnitude, depth, and time patterns, not just dots on a map.
+
+- **Watch** quakes sized by magnitude and colored by depth, plus 69 volcanoes by alert level.
+- **Analyze** the Gutenberg–Richter law with a b-value fit, and see the subducting slab in a depth cross-section.
+- **Check** a 24-hour "pulse" that compares today's quake rate against the usual rate.
+- **Keep working offline**: it falls back to a cached sample when the feeds are down.
+
+**Built with:** Python, pandas, NumPy, Folium, Plotly, Streamlit  
+**Data:** BMKG, USGS Earthquake Hazards Program, MAGMA Indonesia (PVMBG)  
+**Engineering:** pytest suite with CI on GitHub Actions. Not an early-warning system
+
+*The rest of this README is in Indonesian.*
 
 **🚀 Coba langsung di browser:** [ring-of-fire-pulse.streamlit.app](https://ring-of-fire-pulse.streamlit.app)
 
