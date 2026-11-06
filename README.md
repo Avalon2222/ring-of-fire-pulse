@@ -1,5 +1,7 @@
 # 🌋 The Pulse of the Ring of Fire
 
+[![Tes](https://github.com/Avalon2222/ring-of-fire-pulse/actions/workflows/tes.yml/badge.svg)](https://github.com/Avalon2222/ring-of-fire-pulse/actions/workflows/tes.yml) [![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/) [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE) [![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://ring-of-fire-pulse.streamlit.app)
+
 > **The ground never sleeps.**
 > Peta langsung gempa bumi dan gunung api Indonesia dari umpan publik **BMKG**, **USGS**, dan **MAGMA Indonesia**,
 > dilengkapi analisis pola magnitudo, kedalaman, dan waktu. Dibangun dengan Python, pandas, Streamlit, Folium, dan Plotly.
