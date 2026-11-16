@@ -224,9 +224,12 @@ def gunung_terdekat(gempa: pd.DataFrame, gunung: pd.DataFrame) -> pd.DataFrame:
         df["jarak_gunung_km"] = pd.Series(dtype=float)
         return df
     jarak = haversine_km(df["lat"].values[:, None], df["lon"].values[:, None], gunung["lat"].values[None, :], gunung["lon"].values[None, :])
-    idx = jarak.argmin(axis=1)
-    df["gunung_terdekat"] = gunung["nama"].values[idx]
-    df["jarak_gunung_km"] = jarak[np.arange(len(df)), idx]
+    # Gempa tanpa koordinat menghasilkan baris jarak NaN semua; argmin lalu
+    # menunjuk indeks 0 sehingga gunung pertama di daftar ikut terpasang.
+    ada = ~np.isnan(jarak).all(axis=1)
+    idx = np.where(ada, np.nanargmin(np.where(np.isnan(jarak), np.inf, jarak), axis=1), 0)
+    df["gunung_terdekat"] = np.where(ada, gunung["nama"].values[idx], None)
+    df["jarak_gunung_km"] = np.where(ada, jarak[np.arange(len(df)), idx], np.nan)
     return df
 
 

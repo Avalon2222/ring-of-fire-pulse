@@ -154,6 +154,15 @@ def test_gunung_terdekat_dan_radius():
     assert sekitar[sekitar["nama"] == "Merapi"].iloc[0]["m_maks"] == 4.0
 
 
+def test_gunung_terdekat_koordinat_kosong():
+    gunung = sumber.muat_gunung_api_statis()
+    gempa = pd.DataFrame({"lat": [np.nan, -7.55], "lon": [np.nan, 110.45], "magnitudo": [4.0, 4.0]})
+    dekat = analisis.gunung_terdekat(gempa, gunung)
+    assert pd.isna(dekat.iloc[0]["gunung_terdekat"])
+    assert math.isnan(dekat.iloc[0]["jarak_gunung_km"])
+    assert dekat.iloc[1]["gunung_terdekat"] == "Merapi"
+
+
 def test_zona_aktif_mengurutkan_dari_terbanyak():
     df = buat_gempa(300)
     z = analisis.zona_aktif(df, ukuran_derajat=2.0, teratas=5)
