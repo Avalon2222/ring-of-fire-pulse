@@ -56,6 +56,19 @@ def test_angka_mengambil_angka_dari_teks():
     assert sumber._angka(4) == 4.0
     assert sumber._angka(None) is None
     assert sumber._angka("tidak ada") is None
+    assert sumber._angka(float("nan")) is None
+    assert sumber._angka(float("inf")) is None
+    assert sumber._angka(True) is None
+
+
+def test_parse_bmkg_melewati_koordinat_nan():
+    payload = {"Infogempa": {"gempa": [
+        {"Coordinates": "nan,106.5", "DateTime": "2026-11-01T00:00:00+00:00", "Magnitude": "5.1", "Kedalaman": "10 km"},
+        {"Coordinates": "-6.1,106.5", "DateTime": "2026-11-01T01:00:00+00:00", "Magnitude": "5.2", "Kedalaman": "10 km"},
+    ]}}
+    df = sumber.parse_bmkg(payload)
+    assert len(df) == 1
+    assert df.iloc[0]["lat"] == -6.1
 
 
 def test_parse_bmkg_membaca_koordinat_dan_kedalaman():

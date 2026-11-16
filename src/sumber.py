@@ -16,6 +16,7 @@ Jika jaringan gagal, ``muat_semua`` jatuh ke berkas contoh di ``data/sample``.
 from __future__ import annotations
 
 import json
+import math
 import re
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
@@ -60,10 +61,11 @@ class HasilMuat:
 
 def _angka(teks: str | float | int | None) -> float | None:
     """Ambil angka pertama dari teks seperti ``"10 km"`` atau ``"5.3"``."""
-    if teks is None:
+    if teks is None or isinstance(teks, bool):
         return None
     if isinstance(teks, (int, float)):
-        return float(teks)
+        # NaN/inf dianggap kosong supaya pemeriksaan "is None" di parser tetap jalan.
+        return float(teks) if math.isfinite(teks) else None
     cocok = re.search(r"-?\d+(?:[.,]\d+)?", str(teks))
     return float(cocok.group(0).replace(",", ".")) if cocok else None
 
