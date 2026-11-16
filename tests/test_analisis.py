@@ -87,6 +87,15 @@ def test_ringkasan_dan_denyut():
     assert d["rata_rata"] > 0
 
 
+def test_persen_dangkal_mengabaikan_kedalaman_kosong():
+    df = buat_gempa(4)
+    df["kedalaman_km"] = [10.0, 400.0, np.nan, np.nan]
+    r = analisis.ringkasan(df, sekarang=pd.Timestamp("2026-11-01", tz="UTC"))
+    assert r["persen_dangkal"] == pytest.approx(50.0)
+    df["kedalaman_km"] = np.nan
+    assert math.isnan(analisis.ringkasan(df)["persen_dangkal"])
+
+
 def test_per_hari_mengisi_hari_kosong():
     df = pd.DataFrame(
         {
