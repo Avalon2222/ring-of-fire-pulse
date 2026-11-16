@@ -84,7 +84,10 @@ def ringkasan(df: pd.DataFrame, sekarang: pd.Timestamp | None = None) -> dict:
         "m_maks": float(terbesar["magnitudo"]),
         "m_median": float(df["magnitudo"].median()),
         "kedalaman_median": float(df["kedalaman_km"].median()),
-        "persen_dangkal": float((df["kedalaman_km"] < 70).mean() * 100),
+        # Persen dihitung dari gempa yang kedalamannya diketahui saja;
+        # kedalaman kosong bukan berarti "tidak dangkal".
+        "persen_dangkal": float((df["kedalaman_km"].dropna() < 70).mean() * 100)
+        if df["kedalaman_km"].notna().any() else float("nan"),
         "energi_total_j": energi_total,
         "energi_hiroshima": setara_hiroshima(energi_total),
     }
