@@ -111,7 +111,8 @@ def denyut(df: pd.DataFrame, jam: int = 24, sekarang: pd.Timestamp | None = None
 
 def magnitudo_lengkap(mag: pd.Series, lebar_bin: float = 0.1) -> float:
     """Perkiraan magnitudo kelengkapan (Mc) dengan metode kelengkungan maksimum:
-    bin magnitudo dengan jumlah gempa terbanyak."""
+    bin magnitudo dengan jumlah gempa terbanyak. Magnitudo kosong diabaikan."""
+    mag = mag.dropna()
     if mag.empty:
         return float("nan")
     bins = (mag / lebar_bin).round().astype(int)
