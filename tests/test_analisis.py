@@ -160,3 +160,14 @@ def test_fungsi_tahan_bingkai_kosong():
     assert analisis.jeda_antar_gempa(kosong).empty
     assert analisis.zona_aktif(kosong).empty
     assert analisis.energi_kumulatif(kosong).empty
+
+
+def test_kelas_kedalaman_nilai_kosong_apa_pun():
+    for kosong in (None, float("nan"), np.nan, pd.NA):
+        assert analisis.kelas_kedalaman(kosong) == "Tidak diketahui"
+
+
+def test_magnitudo_lengkap_mengabaikan_nan():
+    mag = pd.Series([4.5, 4.5, 4.5, None, 5.0, float("nan")])
+    assert analisis.magnitudo_lengkap(mag) == pytest.approx(4.5)
+    assert math.isnan(analisis.magnitudo_lengkap(pd.Series([None, None], dtype=float)))
