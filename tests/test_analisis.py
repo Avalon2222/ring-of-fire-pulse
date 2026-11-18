@@ -209,3 +209,13 @@ def test_energi_kumulatif_tidak_putus_di_magnitudo_kosong():
     assert hasil["kumulatif_j"].notna().all()
     assert hasil["kumulatif_j"].iloc[1] == pytest.approx(analisis.energi_joule(5.0))
     assert hasil["kumulatif_j"].iloc[2] == pytest.approx(analisis.energi_joule(5.0) + analisis.energi_joule(6.0))
+
+
+def test_gutenberg_richter_bin_selain_satu_desimal():
+    gr = analisis.gutenberg_richter(pd.Series([4.0, 4.05, 4.1, 4.3]), lebar_bin=0.05)
+    assert gr["magnitudo"].is_unique
+    assert list(gr["magnitudo"][:3]) == pytest.approx([4.0, 4.05, 4.1])
+    assert list(gr["jumlah_kumulatif"][:3]) == [4, 3, 2]
+    kasar = analisis.gutenberg_richter(pd.Series([4.1, 4.6, 5.2]), lebar_bin=0.5)
+    assert list(kasar["magnitudo"]) == pytest.approx([4.0, 4.5, 5.0])
+    assert list(kasar["jumlah_kumulatif"]) == [3, 2, 1]
