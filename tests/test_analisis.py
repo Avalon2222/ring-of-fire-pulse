@@ -189,3 +189,12 @@ def test_magnitudo_lengkap_mengabaikan_nan():
     mag = pd.Series([4.5, 4.5, 4.5, None, 5.0, float("nan")])
     assert analisis.magnitudo_lengkap(mag) == pytest.approx(4.5)
     assert math.isnan(analisis.magnitudo_lengkap(pd.Series([None, None], dtype=float)))
+
+
+def test_gempa_sekitar_gunung_abaikan_magnitudo_kosong():
+    gunung = sumber.gabung_gunung_api(sumber.muat_gunung_api_statis(), None)
+    gempa = pd.DataFrame({"lat": [-7.55, -7.56], "lon": [110.45, 110.44], "magnitudo": [4.2, np.nan]})
+    sekitar = analisis.gempa_sekitar_gunung(gempa, gunung, radius_km=50)
+    merapi = sekitar[sekitar["nama"] == "Merapi"].iloc[0]
+    assert merapi["jumlah_gempa"] == 2
+    assert merapi["m_maks"] == 4.2

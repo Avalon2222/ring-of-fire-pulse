@@ -241,10 +241,13 @@ def gempa_sekitar_gunung(gempa: pd.DataFrame, gunung: pd.DataFrame, radius_km: f
         return gunung.assign(jumlah_gempa=0, m_maks=np.nan)
     jarak = haversine_km(gunung["lat"].values[:, None], gunung["lon"].values[:, None], gempa["lat"].values[None, :], gempa["lon"].values[None, :])
     dalam = jarak <= radius_km
-    mag = gempa["magnitudo"].values
+    mag = gempa["magnitudo"].to_numpy(dtype=float)
     hasil = gunung.copy()
     hasil["jumlah_gempa"] = dalam.sum(axis=1).astype(int)
-    hasil["m_maks"] = [float(mag[baris].max()) if baris.any() else np.nan for baris in dalam]
+    # nanmax: satu gempa tanpa magnitudo tidak boleh membuat m_maks ikut NaN.
+    hasil["m_maks"] = [
+        float(np.nanmax(mag[baris])) if np.isfinite(mag[baris]).any() else np.nan for baris in dalam
+    ]
     return hasil.sort_values(["jumlah_gempa", "level"], ascending=False).reset_index(drop=True)
 
 
