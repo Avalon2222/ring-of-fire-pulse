@@ -150,7 +150,11 @@ def gutenberg_richter(mag: pd.Series, lebar_bin: float = 0.1) -> pd.DataFrame:
     mag = mag.dropna()
     if mag.empty:
         return pd.DataFrame(columns=["magnitudo", "jumlah_kumulatif", "log10_n"])
-    batas = np.round(np.arange(math.floor(mag.min() * 10) / 10, mag.max() + lebar_bin, lebar_bin), 1)
+    # Batas dibangun dari bilangan bulat kelipatan lebar_bin; membulatkan ke 1 desimal
+    # membuat bin 0,05 jadi ganda (4,0; 4,0; 4,1; 4,1; ...).
+    awal = math.floor(round(mag.min() / lebar_bin, 9))
+    akhir = math.ceil(round(mag.max() / lebar_bin, 9))
+    batas = np.round(np.arange(awal, akhir + 1) * lebar_bin, 6)
     jumlah = [(mag >= m - 1e-9).sum() for m in batas]
     df = pd.DataFrame({"magnitudo": batas, "jumlah_kumulatif": jumlah})
     df = df[df["jumlah_kumulatif"] > 0]
