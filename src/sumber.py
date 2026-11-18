@@ -22,6 +22,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+import numpy as np
 import pandas as pd
 import requests
 
@@ -225,10 +226,11 @@ def ambil_magma() -> pd.DataFrame:
 def gabung_gempa(*bingkai: pd.DataFrame) -> pd.DataFrame:
     """Satukan beberapa katalog dan buang duplikat lintas sumber.
 
-    Dua kejadian dianggap sama bila jatuh di jendela 2 menit yang sama dan
-    koordinatnya membulat ke setengah derajat yang sama. Baris USGS
-    dipertahankan lebih dulu karena katalognya paling lengkap; BMKG
-    melengkapi gempa yang tidak ada di USGS.
+    Dua kejadian dari sumber BERBEDA dianggap sama bila selisih waktunya
+    paling lama 2 menit dan selisih lintang/bujurnya paling jauh setengah
+    derajat. Baris USGS dipertahankan lebih dulu karena katalognya paling
+    lengkap; BMKG melengkapi gempa yang tidak ada di USGS. Gempa dari sumber
+    yang sama tidak pernah dibuang (gempa susulan bisa berdekatan sekali).
     """
     isi = [b for b in bingkai if b is not None and not b.empty]
     if not isi:
@@ -237,11 +239,26 @@ def gabung_gempa(*bingkai: pd.DataFrame) -> pd.DataFrame:
     urutan = {"USGS": 0, "BMKG M5+": 1, "BMKG dirasakan": 2}
     df["_urut"] = df["sumber"].map(urutan).fillna(9)
     df = df.sort_values(["_urut", "waktu_utc"]).reset_index(drop=True)
-    df["_menit"] = df["waktu_utc"].astype("int64") // 10**9 // 120
-    df["_lat"] = (df["lat"] * 2).round()
-    df["_lon"] = (df["lon"] * 2).round()
-    df = df.drop_duplicates(subset=["_menit", "_lat", "_lon"], keep="first")
-    df = df.drop(columns=["_urut", "_menit", "_lat", "_lon"])
+    # Bandingkan selisih langsung, bukan ember waktu/koordinat yang dibulatkan:
+    # 01:59:59 dan 02:00:01 jatuh di ember berbeda padahal hanya terpaut 2 detik.
+    detik = df["waktu_utc"].astype("int64").to_numpy() / 1e9
+    lat = df["lat"].to_numpy(dtype=float)
+    lon = df["lon"].to_numpy(dtype=float)
+    sumber_baris = df["sumber"].to_numpy()
+    simpan = np.ones(len(df), dtype=bool)
+    for i in range(len(df)):
+        lebih_dulu = simpan[:i] & (sumber_baris[:i] != sumber_baris[i])
+        if not lebih_dulu.any():
+            continue
+        sama = (
+            lebih_dulu
+            & (np.abs(detik[:i] - detik[i]) <= 120)
+            & (np.abs(lat[:i] - lat[i]) <= 0.5)
+            & (np.abs(lon[:i] - lon[i]) <= 0.5)
+        )
+        if sama.any():
+            simpan[i] = False
+    df = df[simpan].drop(columns=["_urut"])
     return df.sort_values("waktu_utc", ascending=False).reset_index(drop=True)
 
 

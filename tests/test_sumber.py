@@ -189,3 +189,23 @@ def test_parse_usgs_magtype_null_tidak_tertulis_none():
     r = sumber.parse_usgs(geo).iloc[0]
     assert r["keterangan"] == "automatic"
     assert r["wilayah"] == ""
+
+
+def test_gabung_gempa_duplikat_di_batas_jendela_dua_menit():
+    usgs = sumber.parse_usgs(CONTOH_USGS).head(1).copy()
+    usgs["waktu_utc"] = pd.Timestamp("2026-01-01 01:59:59", tz="UTC")
+    bmkg = usgs.copy()
+    bmkg["sumber"] = "BMKG M5+"
+    bmkg["id"] = "bmkg-x"
+    bmkg["waktu_utc"] = pd.Timestamp("2026-01-01 02:00:01", tz="UTC")
+    gabungan = sumber.gabung_gempa(usgs, bmkg)
+    assert list(gabungan["sumber"]) == ["USGS"]
+
+
+def test_gabung_gempa_tidak_membuang_gempa_susulan_dari_sumber_sama():
+    usgs = sumber.parse_usgs(CONTOH_USGS).head(1).copy()
+    usgs["waktu_utc"] = pd.Timestamp("2026-01-01 02:00:10", tz="UTC")
+    susulan = usgs.copy()
+    susulan["id"] = "susulan"
+    susulan["waktu_utc"] = pd.Timestamp("2026-01-01 02:00:40", tz="UTC")
+    assert len(sumber.gabung_gempa(pd.concat([usgs, susulan], ignore_index=True))) == 2
