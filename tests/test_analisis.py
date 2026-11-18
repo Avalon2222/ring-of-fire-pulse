@@ -219,3 +219,10 @@ def test_gutenberg_richter_bin_selain_satu_desimal():
     kasar = analisis.gutenberg_richter(pd.Series([4.1, 4.6, 5.2]), lebar_bin=0.5)
     assert list(kasar["magnitudo"]) == pytest.approx([4.0, 4.5, 5.0])
     assert list(kasar["jumlah_kumulatif"]) == [3, 2, 1]
+
+
+def test_tambah_kolom_waktu_tanpa_zona_dianggap_utc():
+    df = pd.DataFrame({"waktu_utc": pd.to_datetime(["2026-01-01 20:00"]), "kedalaman_km": [10.0], "magnitudo": [5.0]})
+    hasil = analisis.tambah_kolom(df)
+    assert hasil["jam_wib"].iloc[0] == 3
+    assert str(hasil["tanggal_wib"].iloc[0]) == "2026-01-02"

@@ -55,7 +55,11 @@ def tambah_kolom(df: pd.DataFrame) -> pd.DataFrame:
         return df
     df["kelas_kedalaman"] = df["kedalaman_km"].map(kelas_kedalaman)
     df["energi_joule"] = df["magnitudo"].map(energi_joule)
-    df["waktu_wib"] = df["waktu_utc"].dt.tz_convert(ZONA_WIB)
+    waktu = pd.to_datetime(df["waktu_utc"], errors="coerce")
+    # Waktu tanpa zona (misalnya dari CSV) dianggap UTC; tz_convert menolak waktu naive.
+    if waktu.dt.tz is None:
+        waktu = waktu.dt.tz_localize("UTC")
+    df["waktu_wib"] = waktu.dt.tz_convert(ZONA_WIB)
     df["jam_wib"] = df["waktu_wib"].dt.hour
     df["tanggal_wib"] = df["waktu_wib"].dt.date
     return df
