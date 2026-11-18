@@ -241,7 +241,9 @@ def gabung_gempa(*bingkai: pd.DataFrame) -> pd.DataFrame:
     df = df.sort_values(["_urut", "waktu_utc"]).reset_index(drop=True)
     # Bandingkan selisih langsung, bukan ember waktu/koordinat yang dibulatkan:
     # 01:59:59 dan 02:00:01 jatuh di ember berbeda padahal hanya terpaut 2 detik.
-    detik = df["waktu_utc"].astype("int64").to_numpy() / 1e9
+    # total_seconds tidak bergantung satuan internal (pandas 3 memakai mikrodetik,
+    # sehingga astype("int64") // 10**9 bukan lagi detik).
+    detik = (df["waktu_utc"] - pd.Timestamp(0, tz="UTC")).dt.total_seconds().to_numpy()
     lat = df["lat"].to_numpy(dtype=float)
     lon = df["lon"].to_numpy(dtype=float)
     sumber_baris = df["sumber"].to_numpy()
