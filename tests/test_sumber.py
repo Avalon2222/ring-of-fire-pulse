@@ -209,3 +209,12 @@ def test_gabung_gempa_tidak_membuang_gempa_susulan_dari_sumber_sama():
     susulan["id"] = "susulan"
     susulan["waktu_utc"] = pd.Timestamp("2026-01-01 02:00:40", tz="UTC")
     assert len(sumber.gabung_gempa(pd.concat([usgs, susulan], ignore_index=True))) == 2
+
+
+def test_gabung_gempa_selisih_sepuluh_menit_bukan_duplikat():
+    usgs = sumber.parse_usgs(CONTOH_USGS).head(1).copy()
+    bmkg = usgs.copy()
+    bmkg["sumber"] = "BMKG M5+"
+    bmkg["id"] = "bmkg-x"
+    bmkg["waktu_utc"] = bmkg["waktu_utc"] + pd.Timedelta(minutes=10)
+    assert len(sumber.gabung_gempa(usgs, bmkg)) == 2
