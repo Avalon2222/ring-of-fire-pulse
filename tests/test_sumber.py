@@ -179,3 +179,13 @@ def test_muat_semua_jatuh_ke_data_contoh_saat_jaringan_gagal(monkeypatch):
     assert hasil.offline is True
     assert len(hasil.kesalahan) == 4
     assert not hasil.gempa.empty and not hasil.gunung_api.empty
+
+
+def test_parse_usgs_magtype_null_tidak_tertulis_none():
+    geo = {"features": [{
+        "id": "us1", "properties": {"mag": 4.0, "time": 1793452208987, "magType": None, "status": "automatic", "place": None},
+        "geometry": {"coordinates": [128.9, -6.4, 10.0]},
+    }]}
+    r = sumber.parse_usgs(geo).iloc[0]
+    assert r["keterangan"] == "automatic"
+    assert r["wilayah"] == ""
