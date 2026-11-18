@@ -3,6 +3,8 @@ gunung api (segitiga berwarna level MAGMA), heatmap, dan garis palung."""
 
 from __future__ import annotations
 
+import html
+
 import folium
 import pandas as pd
 from branca.element import MacroElement, Template
@@ -27,21 +29,26 @@ def radius_gempa(m: float) -> float:
     return max(3.0, (m ** 2) / 4.5)
 
 
+def _teks(v) -> str:
+    """Teks dari data luar (BMKG, USGS, MAGMA) di-escape sebelum masuk HTML."""
+    return "" if v is None or (not isinstance(v, str) and pd.isna(v)) else html.escape(str(v))
+
+
 def _popup_gempa(r: pd.Series) -> str:
     waktu = r["waktu_wib"].strftime("%d %b %Y %H:%M WIB") if "waktu_wib" in r and pd.notna(r["waktu_wib"]) else ""
-    tautan = f'<br><a href="{r["url"]}" target="_blank">Detail sumber</a>' if r.get("url") else ""
+    tautan = f'<br><a href="{_teks(r["url"])}" target="_blank">Detail sumber</a>' if r.get("url") else ""
     return (
-        f"<b>M {r['magnitudo']:.1f}</b> · {r['kedalaman_km']:.0f} km<br>{r['wilayah']}<br>"
-        f"<span style='color:#888'>{waktu} · {r['sumber']}</span>"
-        f"{('<br>' + str(r['keterangan'])) if r.get('keterangan') else ''}{tautan}"
+        f"<b>M {r['magnitudo']:.1f}</b> · {r['kedalaman_km']:.0f} km<br>{_teks(r['wilayah'])}<br>"
+        f"<span style='color:#888'>{waktu} · {_teks(r['sumber'])}</span>"
+        f"{('<br>' + _teks(r['keterangan'])) if r.get('keterangan') else ''}{tautan}"
     )
 
 
 def _popup_gunung(r: pd.Series) -> str:
-    tautan = f'<br><a href="{r["url_laporan"]}" target="_blank">Laporan MAGMA</a>' if r.get("url_laporan") else ""
+    tautan = f'<br><a href="{_teks(r["url_laporan"])}" target="_blank">Laporan MAGMA</a>' if r.get("url_laporan") else ""
     return (
-        f"<b>Gunung {r['nama']}</b><br>{r['provinsi']} · {int(r['elevasi_m'])} mdpl<br>"
-        f"Level {int(r['level'])} · <b>{r['status']}</b>{tautan}"
+        f"<b>Gunung {_teks(r['nama'])}</b><br>{_teks(r['provinsi'])} · {int(r['elevasi_m'])} mdpl<br>"
+        f"Level {int(r['level'])} · <b>{_teks(r['status'])}</b>{tautan}"
     )
 
 
@@ -94,7 +101,7 @@ def buat_peta(
                 fill=True,
                 fill_color=WARNA_KEDALAMAN.get(r.get("kelas_kedalaman", ""), "#9e9e9e"),
                 fill_opacity=0.55,
-                tooltip=f"M {r['magnitudo']:.1f} · {r['kedalaman_km']:.0f} km · {r['wilayah']}",
+                tooltip=f"M {r['magnitudo']:.1f} · {r['kedalaman_km']:.0f} km · {_teks(r['wilayah'])}",
                 popup=folium.Popup(_popup_gempa(r), max_width=280),
             ).add_to(fg_gempa)
         fg_gempa.add_to(m)
@@ -115,7 +122,7 @@ def buat_peta(
             folium.Marker(
                 location=(r["lat"], r["lon"]),
                 icon=ikon,
-                tooltip=f"Gunung {r['nama']} · Level {int(r['level'])} ({r['status']})",
+                tooltip=f"Gunung {_teks(r['nama'])} · Level {int(r['level'])} ({_teks(r['status'])})",
                 popup=folium.Popup(_popup_gunung(r), max_width=260),
             ).add_to(fg_gunung)
         fg_gunung.add_to(m)
