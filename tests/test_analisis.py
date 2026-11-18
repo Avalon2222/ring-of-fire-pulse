@@ -198,3 +198,14 @@ def test_gempa_sekitar_gunung_abaikan_magnitudo_kosong():
     merapi = sekitar[sekitar["nama"] == "Merapi"].iloc[0]
     assert merapi["jumlah_gempa"] == 2
     assert merapi["m_maks"] == 4.2
+
+
+def test_energi_kumulatif_tidak_putus_di_magnitudo_kosong():
+    df = pd.DataFrame({
+        "waktu_utc": pd.to_datetime(["2026-10-01", "2026-10-02", "2026-10-03"], utc=True),
+        "magnitudo": [5.0, np.nan, 6.0],
+    })
+    hasil = analisis.energi_kumulatif(df)
+    assert hasil["kumulatif_j"].notna().all()
+    assert hasil["kumulatif_j"].iloc[1] == pytest.approx(analisis.energi_joule(5.0))
+    assert hasil["kumulatif_j"].iloc[2] == pytest.approx(analisis.energi_joule(5.0) + analisis.energi_joule(6.0))
