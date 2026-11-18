@@ -28,3 +28,9 @@ def test_teks_sumber_luar_di_escape():
     assert "<i>Merapi</i>" not in teks
     assert "Dirasakan <b>III</b>" not in teks
     assert "&lt;script&gt;" in teks
+
+
+def test_kedalaman_kosong_tidak_tampil_nan():
+    teks = peta.buat_peta(_gempa(kedalaman_km=float("nan"), wilayah="Laut Banda"), _gunung()).get_root().render()
+    assert "nan km" not in teks
+    assert "kedalaman ?" in teks
