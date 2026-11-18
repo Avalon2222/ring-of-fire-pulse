@@ -131,7 +131,8 @@ def parse_usgs(geojson: dict) -> pd.DataFrame:
                 "kedalaman_km": float(koord[2]),
                 "wilayah": p.get("place") or "",
                 "sumber": "USGS",
-                "keterangan": f"{p.get('magType', '')} · {p.get('status', '')}".strip(" ·"),
+                # Field bisa ada tapi bernilai null; `or ""` supaya tidak tertulis "None".
+                "keterangan": f"{p.get('magType') or ''} · {p.get('status') or ''}".strip(" ·"),
                 "url": p.get("url") or "",
             }
         )
