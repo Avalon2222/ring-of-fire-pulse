@@ -44,6 +44,13 @@ def _ada(v) -> bool:
     return v is not None and not (not isinstance(v, str) and pd.isna(v)) and str(v).strip() != ""
 
 
+def _elevasi(m) -> str:
+    try:
+        return f"{int(m)} mdpl"
+    except (TypeError, ValueError):  # NaN, pd.NA, atau None dari data MAGMA
+        return "elevasi ?"
+
+
 def _popup_gempa(r: pd.Series) -> str:
     waktu = r["waktu_wib"].strftime("%d %b %Y %H:%M WIB") if "waktu_wib" in r and pd.notna(r["waktu_wib"]) else ""
     tautan = f'<br><a href="{_teks(r["url"])}" target="_blank">Detail sumber</a>' if _ada(r.get("url")) else ""
@@ -57,7 +64,7 @@ def _popup_gempa(r: pd.Series) -> str:
 def _popup_gunung(r: pd.Series) -> str:
     tautan = f'<br><a href="{_teks(r["url_laporan"])}" target="_blank">Laporan MAGMA</a>' if _ada(r.get("url_laporan")) else ""
     return (
-        f"<b>Gunung {_teks(r['nama'])}</b><br>{_teks(r['provinsi'])} · {int(r['elevasi_m'])} mdpl<br>"
+        f"<b>Gunung {_teks(r['nama'])}</b><br>{_teks(r['provinsi'])} · {_elevasi(r['elevasi_m'])}<br>"
         f"Level {int(r['level'])} · <b>{_teks(r['status'])}</b>{tautan}"
     )
 

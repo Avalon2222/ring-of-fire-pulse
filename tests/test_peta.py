@@ -50,3 +50,8 @@ def test_url_dan_keterangan_nan_tidak_jadi_tautan_kosong():
     teks = peta.buat_peta(_gempa(url=float("nan"), keterangan=float("nan")), gunung).get_root().render()
     assert "Detail sumber" not in teks
     assert "Laporan MAGMA" not in teks
+
+
+def test_gunung_tanpa_elevasi_tetap_tampil():
+    teks = peta.buat_peta(_gempa(), _gunung().assign(elevasi_m=float("nan"))).get_root().render()
+    assert "elevasi ?" in teks
