@@ -34,3 +34,12 @@ def test_kedalaman_kosong_tidak_tampil_nan():
     teks = peta.buat_peta(_gempa(kedalaman_km=float("nan"), wilayah="Laut Banda"), _gunung()).get_root().render()
     assert "nan km" not in teks
     assert "kedalaman ?" in teks
+
+
+def test_gempa_dan_gunung_tanpa_koordinat_dilewati():
+    gempa = pd.concat([_gempa(), _gempa(id="g2", lat=float("nan"), wilayah="Tanpa Lokasi")], ignore_index=True)
+    gunung = pd.concat([_gunung(), _gunung().assign(nama="Hilang", lon=float("nan"))], ignore_index=True)
+    teks = peta.buat_peta(gempa, gunung, tampil_heatmap=True).get_root().render()
+    assert "Tanpa Lokasi" not in teks
+    assert "Gunung Hilang" not in teks
+    assert "&lt;script&gt;" in teks
