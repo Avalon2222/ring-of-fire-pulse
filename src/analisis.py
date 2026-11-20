@@ -69,11 +69,29 @@ def tambah_kolom(df: pd.DataFrame) -> pd.DataFrame:
 # Ringkasan
 # ---------------------------------------------------------------------------
 
+def _waktu_utc(df: pd.DataFrame) -> pd.DataFrame:
+    """Samakan `waktu_utc` jadi bertimezone UTC; waktu naive (mis. dari CSV) dianggap UTC.
+
+    Tanpa ini, membandingkan dengan `pd.Timestamp.now(tz="UTC")` melempar TypeError.
+    """
+    waktu = pd.to_datetime(df["waktu_utc"], errors="coerce")
+    waktu = waktu.dt.tz_localize("UTC") if waktu.dt.tz is None else waktu.dt.tz_convert("UTC")
+    return df.assign(waktu_utc=waktu)
+
+
+def _sekarang(sekarang: pd.Timestamp | None) -> pd.Timestamp:
+    if sekarang is None:
+        return pd.Timestamp.now(tz="UTC")
+    sekarang = pd.Timestamp(sekarang)
+    return sekarang.tz_localize("UTC") if sekarang.tzinfo is None else sekarang.tz_convert("UTC")
+
+
 def ringkasan(df: pd.DataFrame, sekarang: pd.Timestamp | None = None) -> dict:
     """Angka-angka utama untuk kartu KPI."""
     if df.empty:
         return {"jumlah": 0}
-    sekarang = sekarang or pd.Timestamp.now(tz="UTC")
+    df = _waktu_utc(df)
+    sekarang = _sekarang(sekarang)
     terbaru = df.sort_values("waktu_utc", ascending=False).iloc[0]
     terbesar = df.sort_values("magnitudo", ascending=False).iloc[0]
     rentang_hari = max((df["waktu_utc"].max() - df["waktu_utc"].min()).total_seconds() / 86400, 1 / 24)
@@ -104,7 +122,8 @@ def denyut(df: pd.DataFrame, jam: int = 24, sekarang: pd.Timestamp | None = None
     """
     if df.empty:
         return {"terakhir": 0, "rata_rata": 0.0, "rasio": 0.0}
-    sekarang = sekarang or pd.Timestamp.now(tz="UTC")
+    df = _waktu_utc(df)
+    sekarang = _sekarang(sekarang)
     batas = sekarang - pd.Timedelta(hours=jam)
     terakhir = int((df["waktu_utc"] >= batas).sum())
     rentang_jam = max((sekarang - df["waktu_utc"].min()).total_seconds() / 3600, jam)
