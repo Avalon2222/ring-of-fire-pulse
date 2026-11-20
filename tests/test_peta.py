@@ -43,3 +43,10 @@ def test_gempa_dan_gunung_tanpa_koordinat_dilewati():
     assert "Tanpa Lokasi" not in teks
     assert "Gunung Hilang" not in teks
     assert "&lt;script&gt;" in teks
+
+
+def test_url_dan_keterangan_nan_tidak_jadi_tautan_kosong():
+    gunung = _gunung().assign(url_laporan=float("nan"))
+    teks = peta.buat_peta(_gempa(url=float("nan"), keterangan=float("nan")), gunung).get_root().render()
+    assert "Detail sumber" not in teks
+    assert "Laporan MAGMA" not in teks

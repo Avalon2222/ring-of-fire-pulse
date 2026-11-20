@@ -39,18 +39,23 @@ def _kedalaman(km) -> str:
     return "kedalaman ?" if km is None or pd.isna(km) else f"{km:.0f} km"
 
 
+def _ada(v) -> bool:
+    """True kalau nilai berisi teks; NaN dari CSV itu truthy, jadi `if r.get(...)` saja tidak cukup."""
+    return v is not None and not (not isinstance(v, str) and pd.isna(v)) and str(v).strip() != ""
+
+
 def _popup_gempa(r: pd.Series) -> str:
     waktu = r["waktu_wib"].strftime("%d %b %Y %H:%M WIB") if "waktu_wib" in r and pd.notna(r["waktu_wib"]) else ""
-    tautan = f'<br><a href="{_teks(r["url"])}" target="_blank">Detail sumber</a>' if r.get("url") else ""
+    tautan = f'<br><a href="{_teks(r["url"])}" target="_blank">Detail sumber</a>' if _ada(r.get("url")) else ""
     return (
         f"<b>M {r['magnitudo']:.1f}</b> · {_kedalaman(r['kedalaman_km'])}<br>{_teks(r['wilayah'])}<br>"
         f"<span style='color:#888'>{waktu} · {_teks(r['sumber'])}</span>"
-        f"{('<br>' + _teks(r['keterangan'])) if r.get('keterangan') else ''}{tautan}"
+        f"{('<br>' + _teks(r['keterangan'])) if _ada(r.get('keterangan')) else ''}{tautan}"
     )
 
 
 def _popup_gunung(r: pd.Series) -> str:
-    tautan = f'<br><a href="{_teks(r["url_laporan"])}" target="_blank">Laporan MAGMA</a>' if r.get("url_laporan") else ""
+    tautan = f'<br><a href="{_teks(r["url_laporan"])}" target="_blank">Laporan MAGMA</a>' if _ada(r.get("url_laporan")) else ""
     return (
         f"<b>Gunung {_teks(r['nama'])}</b><br>{_teks(r['provinsi'])} · {int(r['elevasi_m'])} mdpl<br>"
         f"Level {int(r['level'])} · <b>{_teks(r['status'])}</b>{tautan}"
