@@ -89,6 +89,11 @@ def buat_peta(
             folium.PolyLine(jalur, color="#9aa0ff", weight=2, opacity=0.5, dash_array="6 6", tooltip=f"{nama} (perkiraan)").add_to(fg_palung)
         fg_palung.add_to(m)
 
+    # Folium menolak lokasi NaN ("Location values cannot contain NaNs"), jadi satu gempa
+    # atau gunung tanpa koordinat akan menggagalkan seluruh peta. Lewati saja.
+    gempa = gempa.dropna(subset=["lat", "lon"])
+    gunung = gunung.dropna(subset=["lat", "lon"])
+
     if tampil_heatmap and not gempa.empty:
         fg_heat = folium.FeatureGroup(name="Heatmap", show=True)
         HeatMap(gempa[["lat", "lon", "magnitudo"]].values.tolist(), radius=22, blur=18, min_opacity=0.25).add_to(fg_heat)
