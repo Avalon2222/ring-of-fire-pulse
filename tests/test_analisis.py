@@ -226,3 +226,16 @@ def test_tambah_kolom_waktu_tanpa_zona_dianggap_utc():
     hasil = analisis.tambah_kolom(df)
     assert hasil["jam_wib"].iloc[0] == 3
     assert str(hasil["tanggal_wib"].iloc[0]) == "2026-01-02"
+
+
+def test_ringkasan_dan_denyut_menerima_waktu_tanpa_zona():
+    df = pd.DataFrame({
+        "waktu_utc": pd.to_datetime(["2026-11-01 00:00", "2026-11-02 00:00"]),
+        "magnitudo": [4.0, 5.0], "kedalaman_km": [10.0, 20.0],
+    })
+    sekarang = pd.Timestamp("2026-11-02 06:00", tz="UTC")
+    r = analisis.ringkasan(df, sekarang=sekarang)
+    assert r["menit_sejak_terbaru"] == 360
+    assert r["rentang_hari"] == 1
+    d = analisis.denyut(df, jam=24, sekarang=pd.Timestamp("2026-11-02 06:00"))
+    assert d["terakhir"] == 1
