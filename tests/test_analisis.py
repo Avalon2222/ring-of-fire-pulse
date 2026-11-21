@@ -246,3 +246,10 @@ def test_per_hari_semua_waktu_kosong_tidak_crash():
     hasil = analisis.per_hari(df)
     assert hasil.empty
     assert list(hasil.columns) == ["tanggal", "jumlah", "m_maks"]
+
+
+def test_ringkasan_tanpa_waktu_valid_tetap_punya_laju():
+    df = pd.DataFrame({"waktu_utc": [pd.NaT], "magnitudo": [4.0], "kedalaman_km": [10.0]})
+    hasil = analisis.ringkasan(df, sekarang=pd.Timestamp("2024-01-01", tz="UTC"))
+    assert hasil["rentang_hari"] == pytest.approx(1 / 24)
+    assert hasil["per_hari"] == pytest.approx(24.0)

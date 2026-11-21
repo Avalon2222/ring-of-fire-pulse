@@ -94,7 +94,9 @@ def ringkasan(df: pd.DataFrame, sekarang: pd.Timestamp | None = None) -> dict:
     sekarang = _sekarang(sekarang)
     terbaru = df.sort_values("waktu_utc", ascending=False).iloc[0]
     terbesar = df.sort_values("magnitudo", ascending=False).iloc[0]
-    rentang_hari = max((df["waktu_utc"].max() - df["waktu_utc"].min()).total_seconds() / 86400, 1 / 24)
+    selisih = (df["waktu_utc"].max() - df["waktu_utc"].min()).total_seconds() / 86400
+    # Tanpa waktu yang valid selisihnya NaN, dan max(NaN, x) tetap NaN; pakai batas minimal 1 jam.
+    rentang_hari = max(selisih, 1 / 24) if pd.notna(selisih) else 1 / 24
     energi_total = float(df["magnitudo"].map(energi_joule).sum())
     return {
         "jumlah": int(len(df)),
