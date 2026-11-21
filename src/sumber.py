@@ -288,7 +288,8 @@ def gabung_gunung_api(statis: pd.DataFrame, level: pd.DataFrame | None) -> pd.Da
     df["_k"] = _kunci(df["nama"])
     lvl = level.copy()
     lvl["_k"] = _kunci(lvl["nama"])
-    lvl = lvl.drop_duplicates("_k")
+    # Nama kosong tidak boleh jadi kunci: merge pandas mencocokkan NaN dengan NaN.
+    lvl = lvl[lvl["_k"].fillna("") != ""].drop_duplicates("_k")
     df = df.merge(lvl[["_k", "level", "status", "url_laporan"]], on="_k", how="left").drop(columns="_k")
     df["level"] = df["level"].fillna(1).astype(int)
     df["status"] = df["status"].fillna("Normal")
