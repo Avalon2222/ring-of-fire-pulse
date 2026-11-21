@@ -196,6 +196,9 @@ def per_hari(df: pd.DataFrame) -> pd.DataFrame:
     d = tambah_kolom(df) if "tanggal_wib" not in df else df
     g = d.groupby("tanggal_wib").agg(jumlah=("magnitudo", "size"), m_maks=("magnitudo", "max")).reset_index()
     g = g.rename(columns={"tanggal_wib": "tanggal"})
+    # Semua waktu kosong (NaT) dibuang groupby; date_range(NaT, NaT) lalu melempar ValueError.
+    if g.empty:
+        return pd.DataFrame(columns=["tanggal", "jumlah", "m_maks"])
     semua = pd.date_range(g["tanggal"].min(), g["tanggal"].max(), freq="D").date
     g = g.set_index("tanggal").reindex(semua).fillna({"jumlah": 0}).rename_axis("tanggal").reset_index()
     g["jumlah"] = g["jumlah"].astype(int)
