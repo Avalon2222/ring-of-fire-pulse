@@ -239,3 +239,10 @@ def test_ringkasan_dan_denyut_menerima_waktu_tanpa_zona():
     assert r["rentang_hari"] == 1
     d = analisis.denyut(df, jam=24, sekarang=pd.Timestamp("2026-11-02 06:00"))
     assert d["terakhir"] == 1
+
+
+def test_per_hari_semua_waktu_kosong_tidak_crash():
+    df = pd.DataFrame({"waktu_utc": [pd.NaT, pd.NaT], "magnitudo": [4.0, 5.0], "kedalaman_km": [10.0, 20.0]})
+    hasil = analisis.per_hari(df)
+    assert hasil.empty
+    assert list(hasil.columns) == ["tanggal", "jumlah", "m_maks"]
