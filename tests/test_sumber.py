@@ -218,3 +218,16 @@ def test_gabung_gempa_selisih_sepuluh_menit_bukan_duplikat():
     bmkg["id"] = "bmkg-x"
     bmkg["waktu_utc"] = bmkg["waktu_utc"] + pd.Timedelta(minutes=10)
     assert len(sumber.gabung_gempa(usgs, bmkg)) == 2
+
+
+def test_parse_usgs_geometri_null_dan_kedalaman_null():
+    geo = {
+        "features": [
+            {"id": "a", "properties": {"mag": 4.5, "time": 1700000000000}, "geometry": None},
+            {"id": "b", "properties": None, "geometry": {"coordinates": [120.0, -5.0, 10.0]}},
+            {"id": "c", "properties": {"mag": 5.0, "time": 1700000000000}, "geometry": {"coordinates": [121.0, -6.0, None]}},
+        ]
+    }
+    df = sumber.parse_usgs(geo)
+    assert list(df["id"]) == ["c"]
+    assert pd.isna(df.loc[0, "kedalaman_km"])

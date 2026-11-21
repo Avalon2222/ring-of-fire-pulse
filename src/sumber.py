@@ -117,10 +117,13 @@ def parse_bmkg(payload: dict, label: str = "BMKG") -> pd.DataFrame:
 def parse_usgs(geojson: dict) -> pd.DataFrame:
     """Ubah GeoJSON USGS menjadi DataFrame. Kedalaman ada di koordinat ketiga."""
     baris = []
-    for f in geojson.get("features", []):
-        p = f.get("properties", {})
-        koord = f.get("geometry", {}).get("coordinates", [])
+    for f in geojson.get("features") or []:
+        # properties/geometry bisa bernilai null di GeoJSON; `or {}` supaya .get tidak gagal.
+        p = f.get("properties") or {}
+        koord = (f.get("geometry") or {}).get("coordinates") or []
         if len(koord) < 3 or p.get("mag") is None or p.get("time") is None:
+            continue
+        if _angka(koord[0]) is None or _angka(koord[1]) is None:
             continue
         baris.append(
             {
@@ -129,7 +132,8 @@ def parse_usgs(geojson: dict) -> pd.DataFrame:
                 "lat": float(koord[1]),
                 "lon": float(koord[0]),
                 "magnitudo": float(p["mag"]),
-                "kedalaman_km": float(koord[2]),
+                # Kedalaman null dibiarkan kosong (NaN) agar gempanya tetap tercatat.
+                "kedalaman_km": _angka(koord[2]),
                 "wilayah": p.get("place") or "",
                 "sumber": "USGS",
                 # Field bisa ada tapi bernilai null; `or ""` supaya tidak tertulis "None".
