@@ -231,3 +231,14 @@ def test_parse_usgs_geometri_null_dan_kedalaman_null():
     df = sumber.parse_usgs(geo)
     assert list(df["id"]) == ["c"]
     assert pd.isna(df.loc[0, "kedalaman_km"])
+
+
+def test_gabung_gunung_api_nama_kosong_tidak_saling_cocok():
+    statis = pd.DataFrame({"nama": ["Merapi", None], "lat": [-7.5, -8.0], "lon": [110.4, 112.0]})
+    level = pd.DataFrame(
+        {"nama": [None, "Merapi"], "provinsi": ["", ""], "level": [4, 3],
+         "status": ["Awas", "Siaga"], "url_laporan": ["x", "y"]}
+    )
+    hasil = sumber.gabung_gunung_api(statis, level)
+    assert list(hasil["level"]) == [3, 1]
+    assert list(hasil["status"]) == ["Siaga", "Normal"]
