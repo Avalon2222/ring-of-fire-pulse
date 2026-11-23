@@ -304,4 +304,6 @@ def zona_aktif(df: pd.DataFrame, ukuran_derajat: float = 2.0, teratas: int = 8) 
         .reset_index()
         .rename(columns={"_r": "lat", "_c": "lon"})
     )
-    return g.sort_values("jumlah", ascending=False).head(teratas).reset_index(drop=True)
+    # Kotak dengan jumlah sama diurutkan menurut lat/lon supaya hasilnya tetap; head(-n) dicegah.
+    g = g.sort_values(["jumlah", "lat", "lon"], ascending=[False, True, True], kind="mergesort")
+    return g.head(max(teratas, 0)).reset_index(drop=True)
