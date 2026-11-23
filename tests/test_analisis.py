@@ -278,3 +278,13 @@ def test_ukuran_kotak_dan_lebar_bin_harus_positif(ukuran):
         analisis.magnitudo_lengkap(df["magnitudo"], lebar_bin=ukuran)
     with pytest.raises(ValueError):
         analisis.gutenberg_richter(df["magnitudo"], lebar_bin=ukuran)
+
+
+def test_denyut_waktu_kosong_tidak_menghasilkan_nan():
+    sekarang = pd.Timestamp("2026-11-01", tz="UTC")
+    semua_kosong = pd.DataFrame({"waktu_utc": [None, None], "magnitudo": [4.0, 5.0]})
+    assert analisis.denyut(semua_kosong, 24, sekarang) == {"terakhir": 0, "rata_rata": 0.0, "rasio": 0.0}
+    sebagian = pd.DataFrame({"waktu_utc": ["2026-10-31 12:00", None], "magnitudo": [4.0, 5.0]})
+    hasil = analisis.denyut(sebagian, 24, sekarang)
+    assert hasil["terakhir"] == 1
+    assert hasil["rata_rata"] == pytest.approx(1.0)

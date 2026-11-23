@@ -124,7 +124,11 @@ def denyut(df: pd.DataFrame, jam: int = 24, sekarang: pd.Timestamp | None = None
     """
     if df.empty:
         return {"terakhir": 0, "rata_rata": 0.0, "rasio": 0.0}
-    df = _waktu_utc(df)
+    # Gempa tanpa waktu tidak bisa ditempatkan di jendela mana pun; kalau semuanya kosong,
+    # rentang_jam jadi NaN dan rasio ikut NaN (max(NaN, jam) tetap NaN).
+    df = _waktu_utc(df).dropna(subset=["waktu_utc"])
+    if df.empty:
+        return {"terakhir": 0, "rata_rata": 0.0, "rasio": 0.0}
     sekarang = _sekarang(sekarang)
     batas = sekarang - pd.Timedelta(hours=jam)
     terakhir = int((df["waktu_utc"] >= batas).sum())
