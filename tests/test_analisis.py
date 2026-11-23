@@ -253,3 +253,17 @@ def test_ringkasan_tanpa_waktu_valid_tetap_punya_laju():
     hasil = analisis.ringkasan(df, sekarang=pd.Timestamp("2024-01-01", tz="UTC"))
     assert hasil["rentang_hari"] == pytest.approx(1 / 24)
     assert hasil["per_hari"] == pytest.approx(24.0)
+
+
+def test_zona_aktif_batas_negatif_dan_jumlah_seri():
+    # 60 kotak berbeda dengan jumlah gempa 1-3 berselang-seling.
+    baris = []
+    for i in range(60):
+        for _ in range(i % 3 + 1):
+            baris.append({"lat": -10 + (i // 10) * 2.5, "lon": 95 + (i % 10) * 2.5, "magnitudo": 4.0,
+                          "kedalaman_km": 10.0, "wilayah": "X"})
+    df = pd.DataFrame(baris)
+    assert analisis.zona_aktif(df, teratas=-3).empty
+    z = analisis.zona_aktif(df, ukuran_derajat=2.0, teratas=20)
+    assert (z["jumlah"] == 3).all()
+    assert list(zip(z["lat"], z["lon"])) == sorted(zip(z["lat"], z["lon"]))
