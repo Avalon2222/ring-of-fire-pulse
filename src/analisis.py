@@ -137,9 +137,16 @@ def denyut(df: pd.DataFrame, jam: int = 24, sekarang: pd.Timestamp | None = None
 # Magnitudo: Gutenberg-Richter dan b-value
 # ---------------------------------------------------------------------------
 
+def _periksa_positif(nilai: float, nama: str) -> None:
+    """Lebar bin/kotak nol membuat pembagian tak hingga; negatif membalik pusat kotak."""
+    if not (nilai > 0 and math.isfinite(nilai)):
+        raise ValueError(f"{nama} harus bilangan positif, bukan {nilai!r}")
+
+
 def magnitudo_lengkap(mag: pd.Series, lebar_bin: float = 0.1) -> float:
     """Perkiraan magnitudo kelengkapan (Mc) dengan metode kelengkungan maksimum:
     bin magnitudo dengan jumlah gempa terbanyak. Magnitudo kosong diabaikan."""
+    _periksa_positif(lebar_bin, "lebar_bin")
     mag = mag.dropna()
     if mag.empty:
         return float("nan")
@@ -172,6 +179,7 @@ def b_value(mag: pd.Series, mc: float | None = None, lebar_bin: float = 0.1) -> 
 
 def gutenberg_richter(mag: pd.Series, lebar_bin: float = 0.1) -> pd.DataFrame:
     """Tabel frekuensi kumulatif: untuk setiap M, berapa gempa dengan magnitudo >= M."""
+    _periksa_positif(lebar_bin, "lebar_bin")
     mag = mag.dropna()
     if mag.empty:
         return pd.DataFrame(columns=["magnitudo", "jumlah_kumulatif", "log10_n"])
@@ -288,6 +296,7 @@ def zona_aktif(df: pd.DataFrame, ukuran_derajat: float = 2.0, teratas: int = 8) 
     """Kelompokkan gempa ke kotak ``ukuran_derajat`` x ``ukuran_derajat`` dan
     urutkan dari yang paling ramai. Label diambil dari nama wilayah yang
     paling sering muncul di kotak itu."""
+    _periksa_positif(ukuran_derajat, "ukuran_derajat")
     if df.empty:
         return pd.DataFrame(columns=["lat", "lon", "jumlah", "m_maks", "kedalaman_median", "label"])
     d = df.copy()

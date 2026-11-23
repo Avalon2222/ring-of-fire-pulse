@@ -267,3 +267,14 @@ def test_zona_aktif_batas_negatif_dan_jumlah_seri():
     z = analisis.zona_aktif(df, ukuran_derajat=2.0, teratas=20)
     assert (z["jumlah"] == 3).all()
     assert list(zip(z["lat"], z["lon"])) == sorted(zip(z["lat"], z["lon"]))
+
+
+@pytest.mark.parametrize("ukuran", [0, -2.0, float("nan")])
+def test_ukuran_kotak_dan_lebar_bin_harus_positif(ukuran):
+    df = buat_gempa(20)
+    with pytest.raises(ValueError):
+        analisis.zona_aktif(df, ukuran_derajat=ukuran)
+    with pytest.raises(ValueError):
+        analisis.magnitudo_lengkap(df["magnitudo"], lebar_bin=ukuran)
+    with pytest.raises(ValueError):
+        analisis.gutenberg_richter(df["magnitudo"], lebar_bin=ukuran)
