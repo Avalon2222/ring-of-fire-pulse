@@ -19,7 +19,7 @@ import json
 import math
 import re
 from dataclasses import dataclass, field
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, UTC
 from pathlib import Path
 
 import numpy as np
@@ -60,7 +60,7 @@ class HasilMuat:
 # Parser murni (tanpa jaringan) agar mudah diuji
 # ---------------------------------------------------------------------------
 
-def _angka(teks: str | float | int | None) -> float | None:
+def _angka(teks: str | float | None) -> float | None:
     """Ambil angka pertama dari teks seperti ``"10 km"`` atau ``"5.3"``."""
     if teks is None or isinstance(teks, bool):
         return None
@@ -202,7 +202,7 @@ def ambil_bmkg_dirasakan() -> pd.DataFrame:
 
 
 def ambil_usgs(hari: int = 30, magnitudo_min: float = 2.5, limit: int = 20000) -> pd.DataFrame:
-    mulai = (datetime.now(timezone.utc) - timedelta(days=hari)).strftime("%Y-%m-%dT%H:%M:%S")
+    mulai = (datetime.now(UTC) - timedelta(days=hari)).strftime("%Y-%m-%dT%H:%M:%S")
     params = {
         "format": "geojson",
         "starttime": mulai,
@@ -317,7 +317,7 @@ def muat_semua(hari: int = 30, magnitudo_min: float = 2.5, paksa_offline: bool =
     True bila ada minimal satu sumber yang jatuh ke data contoh.
     """
     sample_gempa, sample_gunung, meta = muat_sample()
-    hasil = HasilMuat(gempa=_bingkai_kosong(), gunung_api=sample_gunung, waktu_ambil=datetime.now(timezone.utc))
+    hasil = HasilMuat(gempa=_bingkai_kosong(), gunung_api=sample_gunung, waktu_ambil=datetime.now(UTC))
     if paksa_offline:
         hasil.gempa = sample_gempa
         hasil.offline = True

@@ -99,7 +99,7 @@ def ringkasan(df: pd.DataFrame, sekarang: pd.Timestamp | None = None) -> dict:
     rentang_hari = max(selisih, 1 / 24) if pd.notna(selisih) else 1 / 24
     energi_total = float(df["magnitudo"].map(energi_joule).sum())
     return {
-        "jumlah": int(len(df)),
+        "jumlah": len(df),
         "rentang_hari": rentang_hari,
         "per_hari": len(df) / rentang_hari,
         "terbaru": terbaru,
@@ -171,7 +171,7 @@ def b_value(mag: pd.Series, mc: float | None = None, lebar_bin: float = 0.1) -> 
     if mc is None:
         mc = magnitudo_lengkap(mag, lebar_bin)
     terpakai = mag[mag >= mc - 1e-9]
-    n = int(len(terpakai))
+    n = len(terpakai)
     if n < 2:
         return {"b": float("nan"), "a": float("nan"), "mc": mc, "n": n, "galat": float("nan")}
     rata = float(terpakai.mean())

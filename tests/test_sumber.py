@@ -1,6 +1,5 @@
 """Pengujian parser dan penggabungan data. Tidak memerlukan jaringan."""
 
-import json
 
 import pandas as pd
 import pytest
