@@ -151,7 +151,8 @@ def magnitudo_lengkap(mag: pd.Series, lebar_bin: float = 0.1) -> float:
     """Perkiraan magnitudo kelengkapan (Mc) dengan metode kelengkungan maksimum:
     bin magnitudo dengan jumlah gempa terbanyak. Magnitudo kosong diabaikan."""
     _periksa_positif(lebar_bin, "lebar_bin")
-    mag = mag.dropna()
+    # Magnitudo tak hingga (sel rusak) tidak bisa dibulatkan ke bin; abaikan seperti NaN.
+    mag = mag[np.isfinite(pd.to_numeric(mag, errors="coerce"))]
     if mag.empty:
         return float("nan")
     bins = (mag / lebar_bin).round().astype(int)
@@ -187,7 +188,7 @@ def b_value(mag: pd.Series, mc: float | None = None, lebar_bin: float = 0.1) -> 
 def gutenberg_richter(mag: pd.Series, lebar_bin: float = 0.1) -> pd.DataFrame:
     """Tabel frekuensi kumulatif: untuk setiap M, berapa gempa dengan magnitudo >= M."""
     _periksa_positif(lebar_bin, "lebar_bin")
-    mag = mag.dropna()
+    mag = mag[np.isfinite(pd.to_numeric(mag, errors="coerce"))]
     if mag.empty:
         return pd.DataFrame(columns=["magnitudo", "jumlah_kumulatif", "log10_n"])
     # Batas dibangun dari bilangan bulat kelipatan lebar_bin; membulatkan ke 1 desimal
