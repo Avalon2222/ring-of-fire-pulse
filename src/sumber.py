@@ -101,7 +101,8 @@ def parse_bmkg(payload: dict, label: str = "BMKG") -> pd.DataFrame:
                 "lon": lon,
                 "magnitudo": _angka(g.get("Magnitude")),
                 "kedalaman_km": _angka(g.get("Kedalaman")),
-                "wilayah": str(g.get("Wilayah", "")).strip(),
+                # Field bisa ada tapi bernilai null; str(None) akan menulis "None" sebagai wilayah.
+                "wilayah": str(g.get("Wilayah") or "").strip(),
                 "sumber": label,
                 "keterangan": str(g.get("Dirasakan") or g.get("Potensi") or "").strip(),
                 "url": "https://www.bmkg.go.id/gempabumi/",
