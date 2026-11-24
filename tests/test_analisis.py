@@ -295,3 +295,11 @@ def test_b_value_dengan_mc_tetap_cek_lebar_bin():
         analisis.b_value(pd.Series([4.0, 4.0, 4.0]), mc=4.0, lebar_bin=0)
     with pytest.raises(ValueError, match="lebar_bin"):
         analisis.b_value(pd.Series([4.0, 4.5]), mc=4.0, lebar_bin=-0.1)
+
+
+def test_magnitudo_tak_hingga_diabaikan():
+    mag = pd.Series([4.0, 4.0, 4.5, np.inf, -np.inf, np.nan])
+    assert analisis.magnitudo_lengkap(mag) == pytest.approx(4.0)
+    gr = analisis.gutenberg_richter(mag)
+    assert gr["magnitudo"].max() == pytest.approx(4.5)
+    assert gr["jumlah_kumulatif"].iloc[0] == 3
