@@ -288,3 +288,10 @@ def test_denyut_waktu_kosong_tidak_menghasilkan_nan():
     hasil = analisis.denyut(sebagian, 24, sekarang)
     assert hasil["terakhir"] == 1
     assert hasil["rata_rata"] == pytest.approx(1.0)
+
+
+def test_b_value_dengan_mc_tetap_cek_lebar_bin():
+    with pytest.raises(ValueError, match="lebar_bin"):
+        analisis.b_value(pd.Series([4.0, 4.0, 4.0]), mc=4.0, lebar_bin=0)
+    with pytest.raises(ValueError, match="lebar_bin"):
+        analisis.b_value(pd.Series([4.0, 4.5]), mc=4.0, lebar_bin=-0.1)
