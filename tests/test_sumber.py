@@ -241,3 +241,12 @@ def test_gabung_gunung_api_nama_kosong_tidak_saling_cocok():
     hasil = sumber.gabung_gunung_api(statis, level)
     assert list(hasil["level"]) == [3, 1]
     assert list(hasil["status"]) == ["Siaga", "Normal"]
+
+
+def test_parse_bmkg_wilayah_null_jadi_kosong():
+    payload = {"Infogempa": {"gempa": [{
+        "Coordinates": "-3.1,128.4", "DateTime": "2026-01-01T00:00:00+00:00",
+        "Magnitude": "5.1", "Kedalaman": "10 km", "Wilayah": None,
+    }]}}
+    df = sumber.parse_bmkg(payload)
+    assert df.loc[0, "wilayah"] == ""
