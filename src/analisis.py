@@ -167,6 +167,9 @@ def b_value(mag: pd.Series, mc: float | None = None, lebar_bin: float = 0.1) -> 
     berarti proporsi gempa besar lebih tinggi dari biasanya; b yang besar
     sering muncul pada kawanan gempa vulkanik.
     """
+    # Mc yang diberikan langsung melewati magnitudo_lengkap, jadi lebar_bin tetap harus dicek di sini;
+    # lebar 0 dengan semua gempa tepat di Mc membuat pembaginya nol.
+    _periksa_positif(lebar_bin, "lebar_bin")
     mag = mag.dropna()
     if mc is None:
         mc = magnitudo_lengkap(mag, lebar_bin)
