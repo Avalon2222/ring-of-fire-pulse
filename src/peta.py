@@ -39,6 +39,11 @@ def _kedalaman(km) -> str:
     return "kedalaman ?" if km is None or pd.isna(km) else f"{km:.0f} km"
 
 
+def _mag(m) -> str:
+    """Magnitudo kosong tampil "M ?", bukan "M nan"."""
+    return "M ?" if m is None or pd.isna(m) else f"M {m:.1f}"
+
+
 def _ada(v) -> bool:
     """True kalau nilai berisi teks; NaN dari CSV itu truthy, jadi `if r.get(...)` saja tidak cukup."""
     return v is not None and not (not isinstance(v, str) and pd.isna(v)) and str(v).strip() != ""
@@ -63,7 +68,7 @@ def _popup_gempa(r: pd.Series) -> str:
     waktu = r["waktu_wib"].strftime("%d %b %Y %H:%M WIB") if "waktu_wib" in r and pd.notna(r["waktu_wib"]) else ""
     tautan = f'<br><a href="{_teks(r["url"])}" target="_blank">Detail sumber</a>' if _ada(r.get("url")) else ""
     return (
-        f"<b>M {r['magnitudo']:.1f}</b> · {_kedalaman(r['kedalaman_km'])}<br>{_teks(r['wilayah'])}<br>"
+        f"<b>{_mag(r['magnitudo'])}</b> · {_kedalaman(r['kedalaman_km'])}<br>{_teks(r['wilayah'])}<br>"
         f"<span style='color:#888'>{waktu} · {_teks(r['sumber'])}</span>"
         f"{('<br>' + _teks(r['keterangan'])) if _ada(r.get('keterangan')) else ''}{tautan}"
     )
@@ -131,7 +136,7 @@ def buat_peta(
                 fill=True,
                 fill_color=WARNA_KEDALAMAN.get(r.get("kelas_kedalaman", ""), "#9e9e9e"),
                 fill_opacity=0.55,
-                tooltip=f"M {r['magnitudo']:.1f} · {_kedalaman(r['kedalaman_km'])} · {_teks(r['wilayah'])}",
+                tooltip=f"{_mag(r['magnitudo'])} · {_kedalaman(r['kedalaman_km'])} · {_teks(r['wilayah'])}",
                 popup=folium.Popup(_popup_gempa(r), max_width=280),
             ).add_to(fg_gempa)
         fg_gempa.add_to(m)

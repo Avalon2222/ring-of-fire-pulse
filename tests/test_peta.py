@@ -61,3 +61,9 @@ def test_gunung_tanpa_level_tetap_tampil():
     gunung = pd.concat([_gunung(), _gunung().assign(nama="Baru", level=float("nan"))], ignore_index=True)
     teks = peta.buat_peta(_gempa(), gunung).get_root().render()
     assert "Gunung Baru · Level ? (Siaga)" in teks
+
+
+def test_magnitudo_kosong_tidak_tampil_nan():
+    teks = peta.buat_peta(_gempa(magnitudo=float("nan"), wilayah="Laut Maluku"), _gunung()).get_root().render()
+    assert "M nan" not in teks
+    assert "M ? · 10 km · Laut Maluku" in teks
