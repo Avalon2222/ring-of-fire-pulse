@@ -171,7 +171,8 @@ def b_value(mag: pd.Series, mc: float | None = None, lebar_bin: float = 0.1) -> 
     # Mc yang diberikan langsung melewati magnitudo_lengkap, jadi lebar_bin tetap harus dicek di sini;
     # lebar 0 dengan semua gempa tepat di Mc membuat pembaginya nol.
     _periksa_positif(lebar_bin, "lebar_bin")
-    mag = mag.dropna()
+    # Magnitudo inf membuat rata-rata inf dan b jadi 0; buang seperti di magnitudo_lengkap.
+    mag = mag[np.isfinite(pd.to_numeric(mag, errors="coerce"))]
     if mc is None:
         mc = magnitudo_lengkap(mag, lebar_bin)
     terpakai = mag[mag >= mc - 1e-9]

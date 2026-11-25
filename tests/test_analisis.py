@@ -303,3 +303,11 @@ def test_magnitudo_tak_hingga_diabaikan():
     gr = analisis.gutenberg_richter(mag)
     assert gr["magnitudo"].max() == pytest.approx(4.5)
     assert gr["jumlah_kumulatif"].iloc[0] == 3
+
+
+def test_b_value_mengabaikan_magnitudo_inf():
+    df = buat_gempa(500)
+    bersih = analisis.b_value(df["magnitudo"], mc=3.0)
+    kotor = analisis.b_value(pd.concat([df["magnitudo"], pd.Series([np.inf])], ignore_index=True), mc=3.0)
+    assert kotor["n"] == bersih["n"]
+    assert kotor["b"] == pytest.approx(bersih["b"])
