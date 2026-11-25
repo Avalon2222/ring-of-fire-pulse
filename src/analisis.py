@@ -246,8 +246,9 @@ def energi_kumulatif(df: pd.DataFrame) -> pd.DataFrame:
     if df.empty:
         return pd.DataFrame(columns=["waktu_utc", "magnitudo", "energi_j", "kumulatif_j", "kumulatif_hiroshima"])
     d = df.sort_values("waktu_utc")[["waktu_utc", "magnitudo"]].copy()
-    # Gempa tanpa magnitudo dihitung 0 joule supaya garis kumulatif tidak putus.
-    d["energi_j"] = d["magnitudo"].map(energi_joule).fillna(0.0)
+    # Gempa tanpa magnitudo dihitung 0 joule supaya garis kumulatif tidak putus;
+    # magnitudo inf (sel rusak) juga, kalau tidak seluruh garis sesudahnya jadi inf.
+    d["energi_j"] = d["magnitudo"].map(energi_joule).replace([np.inf, -np.inf], np.nan).fillna(0.0)
     d["kumulatif_j"] = d["energi_j"].cumsum()
     d["kumulatif_hiroshima"] = d["kumulatif_j"] / ENERGI_HIROSHIMA_J
     return d.reset_index(drop=True)

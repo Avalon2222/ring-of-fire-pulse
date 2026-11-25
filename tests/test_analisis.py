@@ -311,3 +311,13 @@ def test_b_value_mengabaikan_magnitudo_inf():
     kotor = analisis.b_value(pd.concat([df["magnitudo"], pd.Series([np.inf])], ignore_index=True), mc=3.0)
     assert kotor["n"] == bersih["n"]
     assert kotor["b"] == pytest.approx(bersih["b"])
+
+
+def test_energi_kumulatif_magnitudo_inf_dihitung_nol():
+    df = pd.DataFrame({
+        "waktu_utc": pd.to_datetime(["2026-10-01", "2026-10-02", "2026-10-03"], utc=True),
+        "magnitudo": [5.0, np.inf, 6.0],
+    })
+    hasil = analisis.energi_kumulatif(df)
+    assert np.isfinite(hasil["kumulatif_j"]).all()
+    assert hasil["kumulatif_j"].iloc[2] == pytest.approx(analisis.energi_joule(5.0) + analisis.energi_joule(6.0))
