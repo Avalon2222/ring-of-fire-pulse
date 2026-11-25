@@ -55,3 +55,9 @@ def test_url_dan_keterangan_nan_tidak_jadi_tautan_kosong():
 def test_gunung_tanpa_elevasi_tetap_tampil():
     teks = peta.buat_peta(_gempa(), _gunung().assign(elevasi_m=float("nan"))).get_root().render()
     assert "elevasi ?" in teks
+
+
+def test_gunung_tanpa_level_tetap_tampil():
+    gunung = pd.concat([_gunung(), _gunung().assign(nama="Baru", level=float("nan"))], ignore_index=True)
+    teks = peta.buat_peta(_gempa(), gunung).get_root().render()
+    assert "Gunung Baru · Level ? (Siaga)" in teks
