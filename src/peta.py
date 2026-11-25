@@ -51,6 +51,14 @@ def _elevasi(m) -> str:
         return "elevasi ?"
 
 
+def _level(v) -> int | None:
+    """Level MAGMA sebagai int; kosong/rusak jadi None (int(NaN) melempar ValueError)."""
+    try:
+        return int(v)
+    except (TypeError, ValueError, OverflowError):
+        return None
+
+
 def _popup_gempa(r: pd.Series) -> str:
     waktu = r["waktu_wib"].strftime("%d %b %Y %H:%M WIB") if "waktu_wib" in r and pd.notna(r["waktu_wib"]) else ""
     tautan = f'<br><a href="{_teks(r["url"])}" target="_blank">Detail sumber</a>' if _ada(r.get("url")) else ""
@@ -65,7 +73,7 @@ def _popup_gunung(r: pd.Series) -> str:
     tautan = f'<br><a href="{_teks(r["url_laporan"])}" target="_blank">Laporan MAGMA</a>' if _ada(r.get("url_laporan")) else ""
     return (
         f"<b>Gunung {_teks(r['nama'])}</b><br>{_teks(r['provinsi'])} · {_elevasi(r['elevasi_m'])}<br>"
-        f"Level {int(r['level'])} · <b>{_teks(r['status'])}</b>{tautan}"
+        f"Level {_teks(_level(r['level']) if _level(r['level']) is not None else '?')} · <b>{_teks(r['status'])}</b>{tautan}"
     )
 
 
@@ -131,12 +139,13 @@ def buat_peta(
     if tampil_gunung and not gunung.empty:
         fg_gunung = folium.FeatureGroup(name="Gunung api", show=True)
         for _, r in gunung.sort_values("level").iterrows():
-            warna = WARNA_LEVEL.get(int(r["level"]), "#9e9e9e")
-            ukuran = 12 + 4 * int(r["level"])
+            level = _level(r["level"])
+            warna = WARNA_LEVEL.get(level, "#9e9e9e")
+            ukuran = 12 + 4 * (level or 0)
             ikon = folium.DivIcon(
                 html=(
                     f'<div style="font-size:{ukuran}px;line-height:1;color:{warna};'
-                    f'text-shadow:0 0 4px #000, 0 0 10px {warna if r["level"] >= 3 else "transparent"};">&#9650;</div>'
+                    f'text-shadow:0 0 4px #000, 0 0 10px {warna if (level or 0) >= 3 else "transparent"};">&#9650;</div>'
                 ),
                 icon_size=(ukuran, ukuran),
                 icon_anchor=(ukuran // 2, ukuran // 2),
@@ -144,7 +153,7 @@ def buat_peta(
             folium.Marker(
                 location=(r["lat"], r["lon"]),
                 icon=ikon,
-                tooltip=f"Gunung {_teks(r['nama'])} · Level {int(r['level'])} ({_teks(r['status'])})",
+                tooltip=f"Gunung {_teks(r['nama'])} · Level {level if level is not None else '?'} ({_teks(r['status'])})",
                 popup=folium.Popup(_popup_gunung(r), max_width=260),
             ).add_to(fg_gunung)
         fg_gunung.add_to(m)
