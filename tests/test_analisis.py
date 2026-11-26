@@ -321,3 +321,15 @@ def test_energi_kumulatif_magnitudo_inf_dihitung_nol():
     hasil = analisis.energi_kumulatif(df)
     assert np.isfinite(hasil["kumulatif_j"]).all()
     assert hasil["kumulatif_j"].iloc[2] == pytest.approx(analisis.energi_joule(5.0) + analisis.energi_joule(6.0))
+
+
+def test_ringkasan_magnitudo_tak_hingga_diabaikan():
+    df = pd.DataFrame({
+        "waktu_utc": pd.to_datetime(["2024-01-01 00:00", "2024-01-01 01:00"], utc=True),
+        "magnitudo": [4.0, float("inf")],
+        "kedalaman_km": [10.0, 20.0],
+    })
+    r = analisis.ringkasan(df, sekarang=pd.Timestamp("2024-01-02", tz="UTC"))
+    assert r["m_maks"] == 4.0
+    assert math.isfinite(r["energi_total_j"])
+    assert r["energi_total_j"] == pytest.approx(analisis.energi_joule(4.0))
