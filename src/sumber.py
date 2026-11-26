@@ -71,6 +71,15 @@ def _angka(teks: str | float | None) -> float | None:
     return float(cocok.group(0).replace(",", ".")) if cocok else None
 
 
+def _angka_teks(teks: str) -> float | None:
+    """Teks yang seluruhnya angka ("4.5"); "4.5 km" atau "x" dianggap kosong."""
+    try:
+        nilai = float(teks)
+    except ValueError:
+        return None
+    return nilai if math.isfinite(nilai) else None
+
+
 def _bingkai_kosong() -> pd.DataFrame:
     df = pd.DataFrame({k: pd.Series(dtype="object") for k in KOLOM_GEMPA})
     df["waktu_utc"] = pd.to_datetime(df["waktu_utc"], utc=True)
@@ -122,7 +131,9 @@ def parse_usgs(geojson: dict) -> pd.DataFrame:
         # properties/geometry bisa bernilai null di GeoJSON; `or {}` supaya .get tidak gagal.
         p = f.get("properties") or {}
         koord = (f.get("geometry") or {}).get("coordinates") or []
-        if len(koord) < 3 or p.get("mag") is None or p.get("time") is None:
+        # Magnitudo teks rusak ("x") atau inf dilewati, bukan menggagalkan seluruh katalog.
+        mag = _angka_teks(p.get("mag")) if isinstance(p.get("mag"), str) else _angka(p.get("mag"))
+        if len(koord) < 3 or mag is None or p.get("time") is None:
             continue
         if _angka(koord[0]) is None or _angka(koord[1]) is None:
             continue
@@ -132,7 +143,7 @@ def parse_usgs(geojson: dict) -> pd.DataFrame:
                 "waktu_utc": pd.Timestamp(p["time"], unit="ms", tz="UTC"),
                 "lat": float(koord[1]),
                 "lon": float(koord[0]),
-                "magnitudo": float(p["mag"]),
+                "magnitudo": mag,
                 # Kedalaman null dibiarkan kosong (NaN) agar gempanya tetap tercatat.
                 "kedalaman_km": _angka(koord[2]),
                 "wilayah": p.get("place") or "",
