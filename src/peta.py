@@ -6,6 +6,7 @@ from __future__ import annotations
 import html
 
 import folium
+import numpy as np
 import pandas as pd
 from branca.element import MacroElement, Template
 from folium.plugins import HeatMap
@@ -36,12 +37,13 @@ def _teks(v) -> str:
 
 def _kedalaman(km) -> str:
     """Kedalaman BMKG kadang kosong; tampilkan tanda tanya, bukan "nan km"."""
-    return "kedalaman ?" if km is None or pd.isna(km) else f"{km:.0f} km"
+    # inf dari sel rusak juga ditampilkan "?", bukan "inf km".
+    return "kedalaman ?" if km is None or pd.isna(km) or np.isinf(km) else f"{km:.0f} km"
 
 
 def _mag(m) -> str:
     """Magnitudo kosong tampil "M ?", bukan "M nan"."""
-    return "M ?" if m is None or pd.isna(m) else f"M {m:.1f}"
+    return "M ?" if m is None or pd.isna(m) or np.isinf(m) else f"M {m:.1f}"
 
 
 def _ada(v) -> bool:
