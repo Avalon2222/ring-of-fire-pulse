@@ -238,7 +238,8 @@ def jeda_antar_gempa(df: pd.DataFrame) -> pd.Series:
     """Selisih waktu (menit) antara gempa berurutan."""
     if len(df) < 2:
         return pd.Series(dtype=float)
-    w = df["waktu_utc"].sort_values()
+    # Waktu dari CSV masih berupa teks; diff() pada teks melempar TypeError.
+    w = _waktu_utc(df)["waktu_utc"].sort_values()
     return (w.diff().dropna().dt.total_seconds() / 60).reset_index(drop=True)
 
 
