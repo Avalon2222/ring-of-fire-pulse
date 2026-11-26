@@ -67,3 +67,10 @@ def test_magnitudo_kosong_tidak_tampil_nan():
     teks = peta.buat_peta(_gempa(magnitudo=float("nan"), wilayah="Laut Maluku"), _gunung()).get_root().render()
     assert "M nan" not in teks
     assert "M ? · 10 km · Laut Maluku" in teks
+
+
+def test_label_angka_tak_hingga_jadi_tanda_tanya():
+    assert peta._kedalaman(float("inf")) == "kedalaman ?"
+    assert peta._mag(float("-inf")) == "M ?"
+    assert peta._kedalaman(33.4) == "33 km"
+    assert peta._mag(5.25) == "M 5.2"
