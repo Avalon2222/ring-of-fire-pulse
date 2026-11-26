@@ -93,6 +93,8 @@ def ringkasan(df: pd.DataFrame, sekarang: pd.Timestamp | None = None) -> dict:
     df = _waktu_utc(df)
     sekarang = _sekarang(sekarang)
     terbaru = df.sort_values("waktu_utc", ascending=False).iloc[0]
+    # Magnitudo inf (sel rusak) jangan jadi "gempa terbesar" dan membuat total energi tak hingga.
+    df = df.assign(magnitudo=pd.to_numeric(df["magnitudo"], errors="coerce").replace([np.inf, -np.inf], np.nan))
     terbesar = df.sort_values("magnitudo", ascending=False).iloc[0]
     selisih = (df["waktu_utc"].max() - df["waktu_utc"].min()).total_seconds() / 86400
     # Tanpa waktu yang valid selisihnya NaN, dan max(NaN, x) tetap NaN; pakai batas minimal 1 jam.
