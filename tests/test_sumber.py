@@ -250,3 +250,12 @@ def test_parse_bmkg_wilayah_null_jadi_kosong():
     }]}}
     df = sumber.parse_bmkg(payload)
     assert df.loc[0, "wilayah"] == ""
+
+
+def test_parse_usgs_magnitudo_rusak_dilewati():
+    def fitur(i, mag):
+        return {"id": i, "properties": {"mag": mag, "time": 1700000000000}, "geometry": {"coordinates": [100, 0, 10]}}
+
+    df = sumber.parse_usgs({"features": [fitur("a", "x"), fitur("b", float("inf")), fitur("c", "4.5"), fitur("d", 5.1)]})
+    assert df["id"].tolist() == ["c", "d"]
+    assert df["magnitudo"].tolist() == [4.5, 5.1]
