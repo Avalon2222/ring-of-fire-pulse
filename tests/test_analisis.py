@@ -333,3 +333,8 @@ def test_ringkasan_magnitudo_tak_hingga_diabaikan():
     assert r["m_maks"] == 4.0
     assert math.isfinite(r["energi_total_j"])
     assert r["energi_total_j"] == pytest.approx(analisis.energi_joule(4.0))
+
+
+def test_jeda_antar_gempa_waktu_teks_dan_kosong():
+    df = pd.DataFrame({"waktu_utc": ["2024-01-01T00:10:00Z", "2024-01-01T00:00:00Z", None, "2024-01-01T00:40:00Z"]})
+    assert analisis.jeda_antar_gempa(df).tolist() == [10.0, 30.0]
