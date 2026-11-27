@@ -300,6 +300,8 @@ def gempa_sekitar_gunung(gempa: pd.DataFrame, gunung: pd.DataFrame, radius_km: f
     jarak = haversine_km(gunung["lat"].values[:, None], gunung["lon"].values[:, None], gempa["lat"].values[None, :], gempa["lon"].values[None, :])
     dalam = jarak <= radius_km
     mag = gempa["magnitudo"].to_numpy(dtype=float)
+    # Magnitudo inf (sel rusak) jangan jadi m_maks gunung; anggap kosong seperti di ringkasan.
+    mag = np.where(np.isfinite(mag), mag, np.nan)
     hasil = gunung.copy()
     hasil["jumlah_gempa"] = dalam.sum(axis=1).astype(int)
     # nanmax: satu gempa tanpa magnitudo tidak boleh membuat m_maks ikut NaN.
@@ -317,6 +319,7 @@ def zona_aktif(df: pd.DataFrame, ukuran_derajat: float = 2.0, teratas: int = 8) 
     if df.empty:
         return pd.DataFrame(columns=["lat", "lon", "jumlah", "m_maks", "kedalaman_median", "label"])
     d = df.copy()
+    d["magnitudo"] = pd.to_numeric(d["magnitudo"], errors="coerce").replace([np.inf, -np.inf], np.nan)
     d["_r"] = (d["lat"] // ukuran_derajat) * ukuran_derajat + ukuran_derajat / 2
     d["_c"] = (d["lon"] // ukuran_derajat) * ukuran_derajat + ukuran_derajat / 2
     g = (

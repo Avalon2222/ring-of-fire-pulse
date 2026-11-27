@@ -366,3 +366,13 @@ def test_energi_kumulatif_urut_waktu_bukan_teks():
     hasil = analisis.energi_kumulatif(df)
     assert hasil["magnitudo"].tolist() == [6.0, 5.0, 4.0]
     assert hasil["kumulatif_j"].is_monotonic_increasing
+
+
+def test_m_maks_mengabaikan_magnitudo_tak_hingga():
+    gempa = pd.DataFrame({
+        "lat": [-7.5, -7.6], "lon": [110.4, 110.5], "magnitudo": [3.2, float("inf")],
+        "kedalaman_km": [5.0, 6.0], "wilayah": ["Jawa", "Jawa"],
+    })
+    gunung = pd.DataFrame({"nama": ["Merapi"], "lat": [-7.54], "lon": [110.44], "level": [3]})
+    assert analisis.gempa_sekitar_gunung(gempa, gunung)["m_maks"].iloc[0] == pytest.approx(3.2)
+    assert analisis.zona_aktif(gempa)["m_maks"].iloc[0] == pytest.approx(3.2)
