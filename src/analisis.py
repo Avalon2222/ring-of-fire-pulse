@@ -250,7 +250,9 @@ def energi_kumulatif(df: pd.DataFrame) -> pd.DataFrame:
     dan dalam satuan "bom Hiroshima"."""
     if df.empty:
         return pd.DataFrame(columns=["waktu_utc", "magnitudo", "energi_j", "kumulatif_j", "kumulatif_hiroshima"])
-    d = df.sort_values("waktu_utc")[["waktu_utc", "magnitudo"]].copy()
+    # Urutkan menurut waktu sebenarnya, bukan teks: "2026-01-01 10:00" lebih kecil dari "2026-01-01T09:00"
+    # kalau dibandingkan sebagai string, sehingga garis kumulatif bisa mundur.
+    d = _waktu_utc(df[["waktu_utc", "magnitudo"]]).sort_values("waktu_utc", kind="mergesort")
     # Gempa tanpa magnitudo dihitung 0 joule supaya garis kumulatif tidak putus;
     # magnitudo inf (sel rusak) juga, kalau tidak seluruh garis sesudahnya jadi inf.
     d["energi_j"] = d["magnitudo"].map(energi_joule).replace([np.inf, -np.inf], np.nan).fillna(0.0)

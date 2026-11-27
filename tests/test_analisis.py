@@ -356,3 +356,13 @@ def test_tambah_kolom_format_waktu_campuran():
     })
     hasil = analisis.tambah_kolom(df)
     assert hasil["jam_wib"].tolist() == [16, 17]
+
+
+def test_energi_kumulatif_urut_waktu_bukan_teks():
+    df = pd.DataFrame({
+        "waktu_utc": ["2026-01-01T09:00:00", "2026-01-01 10:00:00", "2026-01-01 08:00:00"],
+        "magnitudo": [5.0, 4.0, 6.0],
+    })
+    hasil = analisis.energi_kumulatif(df)
+    assert hasil["magnitudo"].tolist() == [6.0, 5.0, 4.0]
+    assert hasil["kumulatif_j"].is_monotonic_increasing
