@@ -338,3 +338,12 @@ def test_ringkasan_magnitudo_tak_hingga_diabaikan():
 def test_jeda_antar_gempa_waktu_teks_dan_kosong():
     df = pd.DataFrame({"waktu_utc": ["2024-01-01T00:10:00Z", "2024-01-01T00:00:00Z", None, "2024-01-01T00:40:00Z"]})
     assert analisis.jeda_antar_gempa(df).tolist() == [10.0, 30.0]
+
+
+def test_jeda_antar_gempa_format_waktu_campuran():
+    df = pd.DataFrame({
+        "waktu_utc": ["2026-01-01T09:00:00", "2026-01-01 10:00:00", "2026-01-01T18:30:00+07:00"],
+        "magnitudo": [5.0, 4.0, 4.5],
+    })
+    # 18:30 WIB = 11:30 UTC, jadi jedanya 60 dan 90 menit; dulu dua baris terakhir jadi NaT.
+    assert analisis.jeda_antar_gempa(df).tolist() == [60.0, 90.0]

@@ -74,9 +74,14 @@ def _waktu_utc(df: pd.DataFrame) -> pd.DataFrame:
 
     Tanpa ini, membandingkan dengan `pd.Timestamp.now(tz="UTC")` melempar TypeError.
     """
-    waktu = pd.to_datetime(df["waktu_utc"], errors="coerce")
-    waktu = waktu.dt.tz_localize("UTC") if waktu.dt.tz is None else waktu.dt.tz_convert("UTC")
-    return df.assign(waktu_utc=waktu)
+    return df.assign(waktu_utc=_ke_utc(df["waktu_utc"]))
+
+
+def _ke_utc(waktu: pd.Series) -> pd.Series:
+    """Teks/datetime jadi datetime UTC. Format ISO campuran ("...T09:00" dan "... 10:00", atau
+    dengan offset +07:00) tetap terbaca; tanpa format="ISO8601" pandas menebak format dari baris
+    pertama dan baris lain yang beda format diam-diam jadi NaT."""
+    return pd.to_datetime(waktu, errors="coerce", utc=True, format="ISO8601")
 
 
 def _sekarang(sekarang: pd.Timestamp | None) -> pd.Timestamp:
