@@ -347,3 +347,12 @@ def test_jeda_antar_gempa_format_waktu_campuran():
     })
     # 18:30 WIB = 11:30 UTC, jadi jedanya 60 dan 90 menit; dulu dua baris terakhir jadi NaT.
     assert analisis.jeda_antar_gempa(df).tolist() == [60.0, 90.0]
+
+
+def test_tambah_kolom_format_waktu_campuran():
+    df = pd.DataFrame({
+        "waktu_utc": ["2026-01-01T09:00:00", "2026-01-01 10:00:00"],
+        "magnitudo": [5.0, 4.0], "kedalaman_km": [10.0, 80.0],
+    })
+    hasil = analisis.tambah_kolom(df)
+    assert hasil["jam_wib"].tolist() == [16, 17]
