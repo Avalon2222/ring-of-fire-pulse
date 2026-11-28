@@ -268,3 +268,13 @@ def test_parse_usgs_waktu_rusak_dilewati():
     df = sumber.parse_usgs({"features": [fitur("a", "abc"), fitur("b", float("inf")), fitur("c", "1700000000000"), fitur("d", 1700000000000)]})
     assert df["id"].tolist() == ["c", "d"]
     assert df["waktu_utc"].iloc[0] == pd.Timestamp(1700000000000, unit="ms", tz="UTC")
+
+
+def test_parse_bmkg_melewati_koordinat_di_luar_jangkauan():
+    payload = {"Infogempa": {"gempa": [
+        {"Coordinates": "106.5,-6.1", "DateTime": "2026-11-01T00:00:00+00:00", "Magnitude": "5.1", "Kedalaman": "10 km"},
+        {"Coordinates": "-6.1,406.5", "DateTime": "2026-11-01T00:30:00+00:00", "Magnitude": "5.1", "Kedalaman": "10 km"},
+        {"Coordinates": "-6.1,106.5", "DateTime": "2026-11-01T01:00:00+00:00", "Magnitude": "5.2", "Kedalaman": "10 km"},
+    ]}}
+    df = sumber.parse_bmkg(payload)
+    assert df[["lat", "lon"]].values.tolist() == [[-6.1, 106.5]]
