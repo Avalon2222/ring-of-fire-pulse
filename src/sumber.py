@@ -137,10 +137,15 @@ def parse_usgs(geojson: dict) -> pd.DataFrame:
             continue
         if _angka(koord[0]) is None or _angka(koord[1]) is None:
             continue
+        # Waktu rusak (teks, inf) dilewati; satu baris saja dulu menggagalkan seluruh katalog.
+        waktu = p.get("time")
+        waktu_ms = _angka_teks(waktu) if isinstance(waktu, str) else _angka(waktu)
+        if waktu_ms is None:
+            continue
         baris.append(
             {
                 "id": f.get("id"),
-                "waktu_utc": pd.Timestamp(p["time"], unit="ms", tz="UTC"),
+                "waktu_utc": pd.Timestamp(int(waktu_ms), unit="ms", tz="UTC"),
                 "lat": float(koord[1]),
                 "lon": float(koord[0]),
                 "magnitudo": mag,
