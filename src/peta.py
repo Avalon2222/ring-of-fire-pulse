@@ -27,6 +27,9 @@ PALUNG_TIMOR = [(-10.8, 121.0), (-10.4, 124.0), (-9.4, 127.0), (-8.0, 129.5), (-
 
 def radius_gempa(m: float) -> float:
     """Jari-jari piksel: tumbuh kuadratik agar M6 jelas lebih mencolok dari M4."""
+    # Magnitudo kosong/tak hingga (sel rusak) digambar sekecil mungkin; radius inf merusak peta Leaflet.
+    if m is None or not np.isfinite(m):
+        return 3.0
     return max(3.0, (m ** 2) / 4.5)
 
 

@@ -1,6 +1,7 @@
 """Tes popup dan tooltip peta: teks dari sumber luar tidak boleh jadi HTML."""
 
 import pandas as pd
+import pytest
 
 from src import peta
 
@@ -74,3 +75,9 @@ def test_label_angka_tak_hingga_jadi_tanda_tanya():
     assert peta._mag(float("-inf")) == "M ?"
     assert peta._kedalaman(33.4) == "33 km"
     assert peta._mag(5.25) == "M 5.2"
+
+
+def test_radius_gempa_magnitudo_rusak_pakai_ukuran_minimal():
+    for rusak in (None, float("nan"), float("inf"), float("-inf")):
+        assert peta.radius_gempa(rusak) == 3.0
+    assert peta.radius_gempa(6.0) == pytest.approx(8.0)
