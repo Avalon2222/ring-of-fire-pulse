@@ -29,7 +29,8 @@ URUTAN_KEDALAMAN = [nama for _, nama in BATAS_KEDALAMAN]
 
 def kelas_kedalaman(km: float | None) -> str:
     """Kelas kedalaman seismologi: dangkal, menengah, dalam."""
-    if km is None or pd.isna(km):
+    # Kedalaman negatif atau tak hingga (sel rusak) bukan "dangkal" atau "dalam"; perlakukan seperti kosong.
+    if km is None or pd.isna(km) or not math.isfinite(km) or km < 0:
         return "Tidak diketahui"
     for batas, nama in BATAS_KEDALAMAN:
         if km < batas:

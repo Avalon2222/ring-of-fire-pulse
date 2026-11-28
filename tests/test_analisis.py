@@ -376,3 +376,9 @@ def test_m_maks_mengabaikan_magnitudo_tak_hingga():
     gunung = pd.DataFrame({"nama": ["Merapi"], "lat": [-7.54], "lon": [110.44], "level": [3]})
     assert analisis.gempa_sekitar_gunung(gempa, gunung)["m_maks"].iloc[0] == pytest.approx(3.2)
     assert analisis.zona_aktif(gempa)["m_maks"].iloc[0] == pytest.approx(3.2)
+
+
+def test_kelas_kedalaman_negatif_atau_tak_hingga_tidak_diketahui():
+    for rusak in (float("inf"), float("-inf"), -5.0):
+        assert analisis.kelas_kedalaman(rusak) == "Tidak diketahui"
+    assert analisis.kelas_kedalaman(0.0) == "Dangkal (<70 km)"
