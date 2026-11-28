@@ -102,6 +102,9 @@ def parse_bmkg(payload: dict, label: str = "BMKG") -> pd.DataFrame:
         waktu = g.get("DateTime")
         if lat is None or lon is None or not waktu:
             continue
+        # Lintang di luar ±90 atau bujur di luar ±180 (koordinat tertukar/rusak) tidak bisa dipetakan.
+        if abs(lat) > 90 or abs(lon) > 180:
+            continue
         baris.append(
             {
                 "id": f"bmkg-{waktu}-{lat}-{lon}",
