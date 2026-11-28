@@ -259,3 +259,12 @@ def test_parse_usgs_magnitudo_rusak_dilewati():
     df = sumber.parse_usgs({"features": [fitur("a", "x"), fitur("b", float("inf")), fitur("c", "4.5"), fitur("d", 5.1)]})
     assert df["id"].tolist() == ["c", "d"]
     assert df["magnitudo"].tolist() == [4.5, 5.1]
+
+
+def test_parse_usgs_waktu_rusak_dilewati():
+    def fitur(i, waktu):
+        return {"id": i, "properties": {"mag": 5.0, "time": waktu}, "geometry": {"coordinates": [100, 0, 10]}}
+
+    df = sumber.parse_usgs({"features": [fitur("a", "abc"), fitur("b", float("inf")), fitur("c", "1700000000000"), fitur("d", 1700000000000)]})
+    assert df["id"].tolist() == ["c", "d"]
+    assert df["waktu_utc"].iloc[0] == pd.Timestamp(1700000000000, unit="ms", tz="UTC")
